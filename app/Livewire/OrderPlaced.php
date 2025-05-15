@@ -33,17 +33,17 @@ class OrderPlaced extends Component
             'individual_photo' => $cachedData['display_type'] ?? null,
 
             // these are arrays of stored paths, so we head() them only if non-empty
-            'common_photo' => $cachedData['common_photo'] ?? null,
+            'common_photo' => is_array($cachedData['common_photo'] ?? null) ? head($cachedData['common_photo']) : $cachedData['common_photo'] ?? null,
 
             // boolean flags (ensure you cast or normalize as needed)
             'no_photo' => isset($cachedData['no_photo']) && (bool)$cachedData['no_photo'],
 
             // more “head of array” file fields
-            'bride_photo' => $cachedData['bride_photo'] ?? null,
+            'bride_photo' => is_array($cachedData['bride_photo'] ?? null) ? head($cachedData['bride_photo']) : $cachedData['bride_photo'] ?? null,
             'bride_text' => $cachedData['bride_text'] ?? null,
-            'groom_photo' => $cachedData['groom_photo'] ?? null,
+            'groom_photo' => is_array($cachedData['groom_photo'] ?? null) ? head($cachedData['groom_photo']) : $cachedData['groom_photo'] ?? null,
             'groom_text' => $cachedData['groom_text'] ?? null,
-            'couple_photo' => $cachedData['couple_photo'] ?? null,
+            'couple_photo' => is_array($cachedData['couple_photo'] ?? null) ? head($cachedData['couple_photo']) : $cachedData['couple_photo'] ?? null,
             'couple_text' => $cachedData['couple_text'] ?? null,
 
             // simple strings
