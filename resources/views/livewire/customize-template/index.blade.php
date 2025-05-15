@@ -2,26 +2,26 @@
     @include('components.layouts.extras.sidebar')
     <div class="p-4 sm:ml-64 mt-12">
         <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700 my-10">
-            <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: {{ $selectedPageIndex * 20 }}%"> {{ $selectedPageIndex * 20 }}%</div>
+            <div class="bg-[#ebca7e] text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style="width: {{ $selectedPageIndex * 20 }}%"> {{ $selectedPageIndex * 20 }}%</div>
         </div>
         @switch($selectedPageIndex)
             @case(0)
-                <livewire:customize-template.general-info/>
+                <livewire:customize-template.general-info :eventType="$eventType"/>
                 @break
             @case(1)
-                <livewire:customize-template.details-of-celebrants/>
+                <livewire:customize-template.details-of-celebrants :eventType="$eventType"/>
                 @break
             @case(2)
-                <livewire:customize-template.locations/>
+                <livewire:customize-template.locations :eventType="$eventType"/>
                 @break
             @case(3)
-                <livewire:customize-template.advanced-customization/>
+                <livewire:customize-template.advanced-customization :eventType="$eventType"/>
                 @break
             @case(4)
-                <livewire:customize-template.invitation-type/>
+                <livewire:customize-template.invitation-type :eventType="$eventType"/>
                 @break
             @case(5)
-                <livewire:customize-template.invitation-settings/>
+                <livewire:customize-template.invitation-settings :eventType="$eventType"/>
                 @break
         @endswitch
         <div class="mt-4">

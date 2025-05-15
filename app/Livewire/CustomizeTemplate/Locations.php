@@ -23,9 +23,12 @@ class Locations extends Component implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void
+    public ?string $eventType;
+
+    public function mount($eventType=null): void
     {
         $cachedData = Cache::get('eventify-cached-data');
+        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 
@@ -182,7 +185,116 @@ class Locations extends Component implements HasForms
                                     ->required()
                             ])
                             ->hiddenLabel(),
-                    ]),
+                    ])
+                    ->hidden(fn() => $this->eventType !== 'wedding'),
+                Section::make('')
+                    ->columns(2)
+                    ->schema([
+                        Placeholder::make('title')
+                            ->columnSpan(2)
+                            ->hiddenLabel()
+                            ->content(function () {
+                                $title = __('translations.Locations');
+                                $description = __("translations.Let's choose the location where the magic of this event will come to life.");
+                                return new HtmlString('
+                                        <div class="flex justify-center mb-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                 stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+                                            </svg>
+                                        </div>
+
+                                        <h5 class="text-xl font-medium text-gray-900 text-center mb-1">' . $title . '</h5>
+                                        <p class="text-gray-400 text-center block">' . $description . '</p>');
+                            }),
+                        Placeholder::make('')
+                            ->columnSpan(2)
+                            ->content(function () {
+                                return new HtmlString('<span class="font-bold text-lg">' . __('translations.Religious ceremony') . '</span>');
+                            })
+                            ->hiddenLabel(),
+                        GoogleAutocomplete::make('religious_wedding_google_search')
+                            ->columnSpan(2)
+                            ->autocompleteLabel(__('translations.Search address'))
+                            ->autocompletePlaceholder(__('translations.Search address'))
+                            ->label('Searching on Google...')
+                            ->live(onBlur: true)
+                            ->withFields([
+                                TextInput::make('religious_wedding_address')
+                                    ->live(onBlur: true)
+                                    ->extraInputAttributes([
+                                        'data-google-field' => '{street_number} {route}',
+                                    ])
+                                    ->label(__('translations.Street'))
+                                    ->required(),
+                                TextInput::make('religious_wedding_city')
+                                    ->live(onBlur: true)
+                                    ->label(__('translations.City'))
+                                    ->required()
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'locality',
+                                    ]),
+                                TextInput::make('religious_wedding_country')
+                                    ->live(onBlur: true)
+                                    ->label(__('translations.Country'))
+                                    ->required()
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'country',
+                                    ]),
+                                DateTimePicker::make('religious_wedding_date_time')
+                                    ->live(onBlur: true)
+                                    ->format('d/m/Y')
+                                    ->seconds(false)
+                                    ->label(__('translations.Date and time'))
+                                    ->required()
+                            ])
+                            ->hiddenLabel(),
+                        Placeholder::make('')
+                            ->columnSpan(2)
+                            ->content(function () {
+                                return new HtmlString('<span class="font-bold text-lg">' . __('translations.Party') . '</span>');
+                            })
+                            ->hiddenLabel(),
+                        GoogleAutocomplete::make('party_google_search')
+                            ->columnSpan(2)
+                            ->autocompleteLabel(__('translations.Search address'))
+                            ->autocompletePlaceholder(__('translations.Search address'))
+                            ->label('Searching on Google...')
+                            ->live(onBlur: true)
+                            ->withFields([
+                                TextInput::make('party_address')
+                                    ->live(onBlur: true)
+                                    ->extraInputAttributes([
+                                        'data-google-field' => '{street_number} {route}',
+                                    ])
+                                    ->label(__('translations.Street'))
+                                    ->required(),
+                                TextInput::make('party_city')
+                                    ->live(onBlur: true)
+                                    ->label(__('translations.City'))
+                                    ->required()
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'locality',
+                                    ]),
+                                TextInput::make('party_country')
+                                    ->live(onBlur: true)
+                                    ->label(__('translations.Country'))
+                                    ->required()
+                                    ->extraInputAttributes([
+                                        'data-google-field' => 'country',
+                                    ]),
+                                DateTimePicker::make('party_date_time')
+                                    ->live(onBlur: true)
+                                    ->format('d/m/Y')
+                                    ->seconds(false)
+                                    ->label(__('translations.Date and time'))
+                                    ->required()
+                            ])
+                            ->hiddenLabel(),
+                    ])
+                    ->hidden(fn() => $this->eventType !== 'baptism'),
             ])
             ->statePath('data');
     }

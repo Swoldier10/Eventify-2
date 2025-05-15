@@ -18,9 +18,12 @@ class GeneralInfo extends Component implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void
+    public ?string $eventType;
+
+    public function mount($eventType=null): void
     {
         $cachedData = Cache::get('eventify-cached-data');
+        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 

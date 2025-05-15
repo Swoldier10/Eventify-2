@@ -63,6 +63,13 @@ class Invitation extends Model
         'invitation_password',
         'event_type_id',
         'user_id',
+
+//        for baptism
+        'child_name',
+        'twin_name',
+        'kids_text',
+        'child_photo',
+        'child_section_image',
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

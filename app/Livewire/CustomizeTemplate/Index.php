@@ -21,7 +21,14 @@ class Index extends SimplePage implements HasForms, HasActions
     protected static string $view = 'livewire.customize-template.index';
     protected static string $layout = 'components.layouts.app';
 
+    public ?string $eventType;
+
     public int $selectedPageIndex = 0;
+
+    public function mount($eventType=null)
+    {
+        $this->eventType = $eventType;
+    }
 
     public function selectPage($index): void
     {

@@ -23,9 +23,12 @@ class InvitationSettings extends Component implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void
+    public ?string $eventType;
+
+    public function mount($eventType=null): void
     {
         $cachedData = Cache::get('eventify-cached-data');
+        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 
@@ -69,6 +72,16 @@ class InvitationSettings extends Component implements HasForms
                                     ->live(onBlur: true)
                                     ->hiddenLabel()
                                     ->prefix('www.eventify.ro/i/')
+                                    ->placeholder(function (){
+                                        if ($this->eventType == 'wedding')
+                                        {
+                                            return 'Ex. nunta-ana-si-mircea';
+                                        }
+                                        else if($this->eventType == 'baptism')
+                                        {
+                                            return 'Ex. botez-maria';
+                                        }
+                                    })
                                     ->suffixActions([
                                         \Filament\Forms\Components\Actions\Action::make('verify_availability')
                                             ->iconButton()

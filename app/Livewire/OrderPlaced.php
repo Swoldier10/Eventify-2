@@ -102,6 +102,13 @@ class OrderPlaced extends Component
             'limit_confirmation_once' => array_search('limit_to_one_confirmation', $cachedData['options']),
             'invitation_password' => $cachedData['invitation_password'] ?? null,
 
+//            for baptism
+            'child_name' => $cachedData['child_name'] ?? null,
+            'twin_name' => $cachedData['twin_name'] ?? null,
+            'kids_text' => $cachedData['kids_text'] ?? null,
+            'child_photo' => is_array($cachedData['child_photo'] ?? null) ? head($cachedData['child_photo']) : $cachedData['child_photo'] ?? null,
+            'child_section_image' => is_array($cachedData['child_section_image'] ?? null) ? head($cachedData['child_section_image']) : $cachedData['child_section_image'] ?? null,
+
             // use the looked-up weddingTypeId
             'event_type_id' => 1,
 

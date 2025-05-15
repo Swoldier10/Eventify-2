@@ -5,6 +5,7 @@ namespace App\Livewire\CustomizeTemplate;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -26,9 +27,12 @@ class DetailsOfCelebrants extends Component implements HasForms
 
     public ?array $data = [];
 
-    public function mount(): void
+    public ?string $eventType;
+
+    public function mount($eventType=null): void
     {
         $cachedData = Cache::get('eventify-cached-data');
+        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 
@@ -254,7 +258,120 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->columnSpan(2)
                             ->label(__('translations.Names of the parents'))
                             ->placeholder('Ex. Mara ' . __('translations.and') . ' Daniel Popescu'),
-                    ]),
+                    ])
+                    ->hidden(fn() => $this->eventType !== 'wedding'),
+                Section::make('')
+                    ->columns(1)
+                    ->schema([
+                        Placeholder::make('title')
+                            ->hiddenLabel()
+                            ->columnSpan(2)
+                            ->content(function () {
+                                $title = __('translations.Details of the celebrants');
+
+                                return new HtmlString('
+                                    <div class="flex justify-center mb-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                             stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                                        </svg>
+                                    </div>
+
+                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-6">' . $title . '</h5>');
+                            }),
+
+                        Radio::make('nr_kids')
+                            ->columnSpanFull()
+                            ->live()
+                            ->label(__('translations.Number of children'))
+                            ->required()
+                            ->options([
+                                'single' => '1 ' . __('translations.Child'),
+                                'twins' => '2 ' . __('translations.Children'),
+                            ])
+                            ->descriptions([
+                                'single' => __('translations.Baptism of a single child'),
+                                'twins' => __('translations.Baptism for twins'),
+                            ]),
+
+                        TextInput::make('child_name')
+                            ->columnSpanFull()
+                            ->live(onBlur: true)
+                            ->label(__("translations.Child name"))
+                            ->placeholder('Ex. Andrei')
+                            ->required(),
+
+                        TextInput::make('twin_name')
+                            ->columnSpanFull()
+                            ->live(onBlur: true)
+                            ->label(__("translations.Brother/sister's name"))
+                            ->placeholder('Ex. Bianca')
+                            ->visible(function (Get $get) {
+                                return $get('nr_kids') == 'twins';
+                            }),
+                        Textarea::make('kids_text')
+                            ->columnSpanFull()
+                            ->live(onBlur: true)
+                            ->placeholder(__('translations.Some words about the children'))
+                            ->hintIcon('heroicon-m-question-mark-circle', tooltip: __("translations.This text will replace the description in the section dedicated to the child."))
+                            ->hiddenLabel(),
+                        Placeholder::make('')
+                            ->hiddenLabel()
+                            ->columnSpan(2)
+                            ->content(function () {
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                            }),
+                        FileUpload::make('child_photo')
+                            ->live(onBlur: true)
+                            ->image()
+                            ->imageEditor()
+                            ->panelAspectRatio('2:1')
+                            ->label(__('translations.Child photo'))
+                            ->visible(function (Get $get) {
+                                return $get('nr_kids') == 'single';
+                            })
+                            ->extraAttributes([
+                                'class' => 'w-1/2 md:w-full ml-auto mr-auto'
+                            ])
+                            ->required(),
+                        Grid::make(1)
+                            ->columnSpan(2)
+                            ->schema([
+                                FileUpload::make('common_photo')
+                                    ->label(__('translations.Children photo'))
+                                    ->live(onBlur: true)
+                                    ->image()
+                                    ->imageEditor()
+                                    ->panelAspectRatio('2:1')
+                                    ->visible(function (Get $get) {
+                                        return $get('nr_kids') == 'twins';
+                                    })
+                                    ->extraAttributes([
+                                        'class' => 'w-1/2 md:w-full ml-auto mr-auto'
+                                    ])
+                                    ->required(),
+                            ]),
+                        Textarea::make('godparents')
+                            ->live(onBlur: true)
+                            ->columnSpan(2)
+                            ->label(__('translations.Names of the Godparents'))
+                            ->required()
+                            ->placeholder('Ex. Mara ' . __('translations.and') . ' Daniel Popescu'),
+                        Placeholder::make('')
+                            ->hiddenLabel()
+                            ->columnSpan(2)
+                            ->content(function () {
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                            }),
+                        Textarea::make('parents')
+                            ->live(onBlur: true)
+                            ->columnSpan(2)
+                            ->label(__('translations.Names of the parents'))
+                            ->placeholder('Ex. Mara ' . __('translations.and') . ' Daniel Popescu')
+                            ->required(),
+                    ])
+                    ->hidden(fn() => $this->eventType !== 'baptism')
             ])
             ->statePath('data');
     }

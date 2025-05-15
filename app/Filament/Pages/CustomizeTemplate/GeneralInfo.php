@@ -26,6 +26,7 @@ class GeneralInfo extends Page
         return EditTemplate::sidebar();
     }
 
+
     public function form(Form $form): Form
     {
         return $form
