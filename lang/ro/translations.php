@@ -187,7 +187,7 @@ return [
     'List of guests who will not be able to attend' => 'Lista persoanelor care nu vor putea participa',
     'Confirmed guest list' => 'Lista invitați confirmați',
     'Street' => 'Strada',
-    'Date and time' => 'Data si ora',
+    'Date and time' => 'Data şi ora',
     'View template' => 'Preview invitatie',
     'Number of children' => 'Numǎr de copii',
     'Baptism of a single child' => 'Botezul unui singur copil',

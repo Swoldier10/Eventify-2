@@ -108,6 +108,7 @@ class Locations extends Component implements HasForms
                                     ->format('d/m/Y')
                                     ->seconds(false)
                                     ->label(__('translations.Date and time'))
+                                    ->placeholder(__('translations.Select date'))
                                     ->required()
                             ])
                             ->hiddenLabel(),
@@ -150,6 +151,7 @@ class Locations extends Component implements HasForms
                                     ->format('d/m/Y')
                                     ->seconds(false)
                                     ->label(__('translations.Date and time'))
+                                    ->placeholder(__('translations.Select date'))
                                     ->required()
                             ])
                             ->hiddenLabel(),
@@ -192,6 +194,7 @@ class Locations extends Component implements HasForms
                                     ->format('d/m/Y')
                                     ->seconds(false)
                                     ->label(__('translations.Date and time'))
+                                    ->placeholder(__('translations.Select date'))
                                     ->required()
                             ])
                             ->hiddenLabel(),
@@ -258,6 +261,7 @@ class Locations extends Component implements HasForms
                                     ->format('d/m/Y')
                                     ->seconds(false)
                                     ->label(__('translations.Date and time'))
+                                    ->placeholder(__('translations.Select date'))
                                     ->required()
                             ])
                             ->hiddenLabel(),
@@ -300,6 +304,7 @@ class Locations extends Component implements HasForms
                                     ->format('d/m/Y')
                                     ->seconds(false)
                                     ->label(__('translations.Date and time'))
+                                    ->placeholder(__('translations.Select date'))
                                     ->required()
                             ])
                             ->hiddenLabel(),

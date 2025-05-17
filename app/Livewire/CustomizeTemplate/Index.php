@@ -32,8 +32,6 @@ class Index extends SimplePage implements HasForms, HasActions
 
     public function mount($eventType=null)
     {
-        dd($eventType);
-        $this->getCurrentInvitation();
         $this->eventType = $eventType;
     }
 
@@ -68,12 +66,4 @@ class Index extends SimplePage implements HasForms, HasActions
         $this->redirect(Filament::getRegistrationUrl());
     }
 
-    public function getCurrentInvitation(): void
-    {
-        // Get the current URL path (excluding the domain)
-        $path = Request::path();
-        $segments = explode('/', $path);
-        $invitationId = $segments[1];
-        $this->invitation = Invitation::findOrFail($invitationId);
-    }
 }
