@@ -2,7 +2,7 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
-use Faker\Provider\Text;
+use App\Filament\Pages\EditTemplate;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 use Tapp\FilamentGoogleAutocomplete\Forms\Components\GoogleAutocomplete;
 
 class Locations extends Component implements HasForms
@@ -27,8 +26,19 @@ class Locations extends Component implements HasForms
 
     public function mount($eventType=null): void
     {
+        if ($eventType === null) {
+            $eventTypeId = EditTemplate::getCurrentInvitation()->event_type_id;
+
+            $this->eventType = match ($eventTypeId) {
+                1 => 'wedding',
+                2 => 'baptism',
+                default => 'party',
+            };
+        } else {
+            $this->eventType = $eventType;
+        }
+
         $cachedData = Cache::get('eventify-cached-data');
-        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 
@@ -55,8 +65,8 @@ class Locations extends Component implements HasForms
                                             </svg>
                                         </div>
 
-                                        <h5 class="text-xl font-medium text-gray-900 text-center mb-1">' . $title . '</h5>
-                                        <p class="text-gray-400 text-center block">' . $description . '</p>');
+                                        <h5 class="text-xl font-medium text-gray-900 text-center mb-1 dark:text-white">' . $title . '</h5>
+                                        <p class="text-gray-400 text-center block dark:text-gray-300">' . $description . '</p>');
                             }),
                         Placeholder::make('')
                             ->columnSpan(2)
@@ -206,8 +216,8 @@ class Locations extends Component implements HasForms
                                             </svg>
                                         </div>
 
-                                        <h5 class="text-xl font-medium text-gray-900 text-center mb-1">' . $title . '</h5>
-                                        <p class="text-gray-400 text-center block">' . $description . '</p>');
+                                        <h5 class="text-xl font-medium text-gray-900 text-center mb-1 dark:text-white">' . $title . '</h5>
+                                        <p class="text-gray-400 text-center block dark:text-gray-300">' . $description . '</p>');
                             }),
                         Placeholder::make('')
                             ->columnSpan(2)

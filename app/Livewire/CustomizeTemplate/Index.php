@@ -2,6 +2,7 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Models\Invitation;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -11,6 +12,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\SimplePage;
 use Filament\Support\Colors\Color;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
 
 class Index extends SimplePage implements HasForms, HasActions
 {
@@ -23,10 +26,14 @@ class Index extends SimplePage implements HasForms, HasActions
 
     public ?string $eventType;
 
+    public Model $invitation;
+
     public int $selectedPageIndex = 0;
 
     public function mount($eventType=null)
     {
+        dd($eventType);
+        $this->getCurrentInvitation();
         $this->eventType = $eventType;
     }
 
@@ -59,5 +66,14 @@ class Index extends SimplePage implements HasForms, HasActions
     public function toLogin(): void
     {
         $this->redirect(Filament::getRegistrationUrl());
+    }
+
+    public function getCurrentInvitation(): void
+    {
+        // Get the current URL path (excluding the domain)
+        $path = Request::path();
+        $segments = explode('/', $path);
+        $invitationId = $segments[1];
+        $this->invitation = Invitation::findOrFail($invitationId);
     }
 }

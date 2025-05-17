@@ -60,6 +60,6 @@ class Locations extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return __('translations.Details of the celebrants');
+        return __('translations.Locations');
     }
 }

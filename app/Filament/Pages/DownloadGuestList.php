@@ -27,7 +27,7 @@ class DownloadGuestList extends Page implements HasForms, HasTable
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-tray';
 
     protected static string $view = 'filament.pages.download-guest-list';
-    protected static ?int $navigationSort = 92;
+    protected static ?int $navigationSort = 93;
 
     public Model $record;
 

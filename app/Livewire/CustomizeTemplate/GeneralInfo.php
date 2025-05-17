@@ -2,15 +2,19 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Models\Invitation;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
+
 
 class GeneralInfo extends Component implements HasForms
 {
@@ -19,6 +23,7 @@ class GeneralInfo extends Component implements HasForms
     public ?array $data = [];
 
     public ?string $eventType;
+
 
     public function mount($eventType=null): void
     {
@@ -50,8 +55,8 @@ class GeneralInfo extends Component implements HasForms
                                         </svg>
                                     </div>
 
-                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-1">' . $title . '</h5>
-                                    <p class="text-gray-400 text-center block">' . $subTitle . '</p>'
+                                    <h5 class="text-xl font-medium text-gray-900 dark:text-white text-center mb-1">' . $title . '</h5>
+                                    <p class="text-gray-400 text-center block dark:text-gray-300">' . $subTitle . '</p>'
                                 );
                             }),
                         TextInput::make('name')
@@ -94,6 +99,7 @@ class GeneralInfo extends Component implements HasForms
 
         Cache::put('eventify-cached-data', $cachedData);
     }
+
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {

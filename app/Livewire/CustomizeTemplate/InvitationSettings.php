@@ -58,15 +58,15 @@ class InvitationSettings extends Component implements HasForms
                 </svg>
                                 </div>
 
-                                <h5 class="text-xl font-medium text-gray-900 text-center mb-1">' . $title . '</h5>
-                                <p class="text-gray-400 text-center block mb-6">' . $description . '</p>'
+                                <h5 class="text-xl font-medium text-gray-900 text-center mb-1 dark:text-white">' . $title . '</h5>
+                                <p class="text-gray-400 text-center block mb-6 dark:text-gray-300">' . $description . '</p>'
                                 );
                             }),
                         Section::make('')
                             ->schema([
                                 Placeholder::make('')
                                     ->content(function () {
-                                        return new HtmlString('<h5 class="mb-2 text-xl font-semibold tracking-tight text-gray-900">' . __('translations.Choose the invitation link') . '</h5>');
+                                        return new HtmlString('<h5 class="mb-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-300">' . __('translations.Choose the invitation link') . '</h5>');
                                     }),
                                 TextInput::make('invitation_link')
                                     ->live(onBlur: true)

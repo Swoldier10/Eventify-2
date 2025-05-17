@@ -2,6 +2,7 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Filament\Pages\EditTemplate;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -31,8 +32,19 @@ class DetailsOfCelebrants extends Component implements HasForms
 
     public function mount($eventType=null): void
     {
+        if ($eventType === null) {
+            $eventTypeId = EditTemplate::getCurrentInvitation()->event_type_id;
+
+            $this->eventType = match ($eventTypeId) {
+                1 => 'wedding',
+                2 => 'baptism',
+                default => 'party',
+            };
+        } else {
+            $this->eventType = $eventType;
+        }
+
         $cachedData = Cache::get('eventify-cached-data');
-        $this->eventType = $eventType;
         $this->form->fill($cachedData);
     }
 
@@ -58,7 +70,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                         </svg>
                                     </div>
 
-                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-6">' . $title . '</h5>');
+                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-6 dark:text-white">' . $title . '</h5>');
                             }),
                         TextInput::make('bride_first_name')
                             ->live(onBlur: true)
@@ -96,7 +108,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->hiddenLabel()
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6 dark:border-gray-700"></div>');
                             }),
                         Grid::make(3)
                             ->columnSpan(2)
@@ -251,7 +263,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->hiddenLabel()
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6 dark:border-gray-700"></div>');
                             }),
                         Textarea::make('parents')
                             ->live(onBlur: true)
@@ -278,7 +290,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                         </svg>
                                     </div>
 
-                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-6">' . $title . '</h5>');
+                                    <h5 class="text-xl font-medium text-gray-900 text-center mb-6 dark:text-white">' . $title . '</h5>');
                             }),
 
                         Radio::make('nr_kids')
@@ -320,7 +332,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->hiddenLabel()
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6 dark:border-gray-700"></div>');
                             }),
                         FileUpload::make('child_photo')
                             ->live(onBlur: true)
@@ -362,7 +374,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->hiddenLabel()
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<div class="border-b border-gray-200 mt-6"></div>');
+                                return new HtmlString('<div class="border-b border-gray-200 mt-6 dark:border-gray-700"></div>');
                             }),
                         Textarea::make('parents')
                             ->live(onBlur: true)

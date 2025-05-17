@@ -19,8 +19,10 @@ class GeneralInfo extends Page
 
     protected static string $view = 'filament.pages.customize-template.general-info';
 
-    protected static bool $shouldRegisterNavigation = false;
-
+    public static function getNavigationLabel(): string
+    {
+        return __('translations.Edit invitation');
+    }
     public static function sidebar(): \AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar
     {
         return EditTemplate::sidebar();

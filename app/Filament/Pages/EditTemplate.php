@@ -8,11 +8,13 @@ use App\Filament\Pages\CustomizeTemplate\GeneralInfo;
 use App\Filament\Pages\CustomizeTemplate\InvitationSettings;
 use App\Filament\Pages\CustomizeTemplate\InvitationType;
 use App\Filament\Pages\CustomizeTemplate\Locations;
+use App\Models\Invitation;
 use AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar;
 use AymanAlhattami\FilamentPageWithSidebar\PageNavigationItem;
 use AymanAlhattami\FilamentPageWithSidebar\Traits\HasPageSidebar;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Request;
 
 class EditTemplate extends Page
 {
@@ -21,6 +23,10 @@ class EditTemplate extends Page
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static string $view = 'filament.pages.edit-template';
+
+    protected static ?int $navigationSort = 92;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function getNavigationLabel(): string
     {
@@ -35,8 +41,6 @@ class EditTemplate extends Page
     public static function sidebar(): FilamentPageSidebar
     {
         return FilamentPageSidebar::make()
-            ->setTitle('Application Settings')
-            ->setDescription('general, admin, website, sms, payments, notifications, shipping')
             ->setNavigationItems([
                 PageNavigationItem::make(__('translations.General info'))
                     ->url(GeneralInfo::getUrl())
@@ -74,5 +78,14 @@ class EditTemplate extends Page
                     })
                     ->visible(true),
             ]);
+    }
+
+    public static function getCurrentInvitation()
+    {
+        // Get the current URL path (excluding the domain)
+        $path = Request::path();
+        $segments = explode('/', $path);
+        $invitationId = $segments[1];
+        return Invitation::findOrFail($invitationId);
     }
 }

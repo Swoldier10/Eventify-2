@@ -22,10 +22,10 @@ use pxlrbt\FilamentExcel\Exports\ExcelExport;
 class UnconfirmedGuests extends Page implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
 
     protected static string $view = 'filament.pages.unconfirmed-guests';
-    protected static ?int $navigationSort = 93;
+    protected static ?int $navigationSort = 94;
 
     public Model $record;
 

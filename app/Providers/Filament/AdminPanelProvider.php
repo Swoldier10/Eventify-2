@@ -72,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowAvatarForm()
                     ->shouldShowBrowserSessionsForm(false)
                     ->shouldShowDeleteAccountForm(false)
+                    ->setSort(91)
                     ->setIcon('heroicon-o-user')
                     ->setNavigationLabel(__('translations.My Profile'))
                     ->setTitle(__('translations.My Profile')),

@@ -207,5 +207,6 @@ return [
     'We warmly invite you to' => 'Te invitǎm cu drag la',
     'Our baptism' => 'Botezul nostru',
     'Some words about the children' => 'Câteva cuvinte despre copii',
-    'This text will replace the description in the section dedicated to the child.' => 'Acest text va înlocui descrierea din secțiunea dedicată copilului.'
+    'This text will replace the description in the section dedicated to the child.' => 'Acest text va înlocui descrierea din secțiunea dedicată copilului.',
+    'Last settings for your invitation' => 'Ultimele setǎri pentru invitația ta'
 ];
