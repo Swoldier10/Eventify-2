@@ -32,20 +32,9 @@ class DetailsOfCelebrants extends Component implements HasForms
 
     public function mount($eventType=null): void
     {
-        if ($eventType === null) {
-            $eventTypeId = EditTemplate::getCurrentInvitation()->event_type_id;
-
-            $this->eventType = match ($eventTypeId) {
-                1 => 'wedding',
-                2 => 'baptism',
-                default => 'party',
-            };
-        } else {
-            $this->eventType = $eventType;
-        }
-
-        $cachedData = Cache::get('eventify-cached-data');
-        $this->form->fill($cachedData);
+        EditTemplate::initData($this->data, $eventType);
+        $this->eventType = $eventType;
+        $this->form->fill($this->data);
     }
 
     public function form(Form $form): Form

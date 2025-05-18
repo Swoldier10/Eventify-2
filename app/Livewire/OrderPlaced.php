@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Invitation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
@@ -54,28 +55,28 @@ class OrderPlaced extends Component
             'civil_wedding_address' => $cachedData['civil_wedding_address'] ?? null,
             'civil_wedding_city' => $cachedData['civil_wedding_city'] ?? null,
             'civil_wedding_country' => $cachedData['civil_wedding_country'] ?? null,
-            'civil_wedding_datepicker' => $cachedData['civil_wedding_date_time'] ?? null,
+            'civil_wedding_datepicker' => Carbon::parse($cachedData['civil_wedding_date_time'])->format('Y-m-d H:i:s') ?? null,
 
             'religious_wedding_address' => $cachedData['religious_wedding_address'] ?? null,
             'religious_wedding_city' => $cachedData['religious_wedding_city'] ?? null,
             'religious_wedding_country' => $cachedData['religious_wedding_country'] ?? null,
-            'religious_wedding_datepicker' => $cachedData['religious_wedding_date_time'] ?? null,
+            'religious_wedding_datepicker' => Carbon::parse($cachedData['religious_wedding_date_time'])->format('Y-m-d H:i:s') ?? null,
 
             // party
             'party_address' => $cachedData['party_address'] ?? null,
             'party_city' => $cachedData['party_city'] ?? null,
             'party_country' => $cachedData['party_country'] ?? null,
-            'party_datepicker' => $cachedData['party_date_time'] ?? null,
+            'party_datepicker' => Carbon::parse($cachedData['party_date_time'])->format('Y-m-d H:i:s') ?? null,
 
             // more file fields
-            'background_photo_first_page' => $cachedData['background_photo_first_page'] ?? null,
+            'background_photo_first_page' => is_array($cachedData['background_photo_first_page'] ?? null) ? head($cachedData['background_photo_first_page']) : $cachedData['background_photo_first_page'] ?? null,
             'invitation_subtitle' => $cachedData['invitation_subtitle'] ?? null,
             'title_color' => $cachedData['title_color'] ?? null,
             'subtitle_color' => $cachedData['subtitle_color'] ?? null,
-            'countdown_image' => $cachedData['countdown_image'],
+            'countdown_image' => is_array($cachedData['countdown_image'] ?? null) ? head($cachedData['countdown_image']) : $cachedData['countdown_image'] ?? null,
             'countdown_text' => $cachedData['countdown_text'] ?? null,
             'countdown' => $cachedData['countdown'] ?? 'civil_wedding',
-            'couple_section_image' => $cachedData['couple_section_image'] ?? null,
+            'couple_section_image' => is_array($cachedData['couple_section_image'] ?? null) ? head($cachedData['couple_section_image']) : $cachedData['couple_section_image'] ?? null,
 
             // description
             'description_title' => $cachedData['description_title'] ?? null,
@@ -85,9 +86,9 @@ class OrderPlaced extends Component
             // extra text
             'additional_question' => $cachedData['additional_question'] ?? null,
             'additional_text' => $cachedData['additional_text'] ?? null,
-            'confirmation_deadline' => $cachedData['confirmation_deadline'] ?? null,
+            'confirmation_deadline' => Carbon::parse($cachedData['confirmation_deadline'])->format('Y-m-d H:i:s') ?? null,
 
-            'whatsapp_thumbnail' => $cachedData['whatsapp_thumbnail'] ?? null,
+            'whatsapp_thumbnail' => is_array($cachedData['whatsapp_thumbnail'] ?? null) ? head($cachedData['whatsapp_thumbnail']) : $cachedData['whatsapp_thumbnail'] ?? null,
             'text_displayed_when_sharing' => $cachedData['text_displayed_when_sharing'] ?? null,
 
             // booleans

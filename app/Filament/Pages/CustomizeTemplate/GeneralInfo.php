@@ -19,6 +19,8 @@ class GeneralInfo extends Page
 
     protected static string $view = 'filament.pages.customize-template.general-info';
 
+    protected static ?int $navigationSort = 91;
+
     public static function getNavigationLabel(): string
     {
         return __('translations.Edit invitation');
@@ -27,7 +29,6 @@ class GeneralInfo extends Page
     {
         return EditTemplate::sidebar();
     }
-
 
     public function form(Form $form): Form
     {

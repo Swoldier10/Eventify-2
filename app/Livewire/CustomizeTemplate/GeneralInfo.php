@@ -2,6 +2,7 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Filament\Pages\EditTemplate;
 use App\Models\Invitation;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -24,12 +25,11 @@ class GeneralInfo extends Component implements HasForms
 
     public ?string $eventType;
 
-
     public function mount($eventType=null): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
-        $this->form->fill($cachedData);
+        $this->form->fill($this->data);
     }
 
     public function form(Form $form): Form

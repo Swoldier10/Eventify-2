@@ -44,7 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->login()
             ->colors([
-                'primary' => '#d2ad57',
+                'primary' => '#ebca7e',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowAvatarForm()
                     ->shouldShowBrowserSessionsForm(false)
                     ->shouldShowDeleteAccountForm(false)
-                    ->setSort(91)
+                    ->setSort(90)
                     ->setIcon('heroicon-o-user')
                     ->setNavigationLabel(__('translations.My Profile'))
                     ->setTitle(__('translations.My Profile')),

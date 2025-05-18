@@ -12,8 +12,10 @@ use App\Models\Invitation;
 use AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar;
 use AymanAlhattami\FilamentPageWithSidebar\PageNavigationItem;
 use AymanAlhattami\FilamentPageWithSidebar\Traits\HasPageSidebar;
+use Filament\Facades\Filament;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 
 class EditTemplate extends Page
@@ -87,5 +89,19 @@ class EditTemplate extends Page
         $segments = explode('/', $path);
         $invitationId = $segments[1];
         return Invitation::findOrFail($invitationId);
+    }
+
+    public static function initData(&$data, &$eventType): void
+    {
+        if (Filament::getTenant()) {
+            $data = Filament::getTenant()->toArray();
+            $eventType = match (Filament::getTenant()->event_type_id) {
+                1 => 'wedding',
+                2 => 'baptism',
+                default => 'party',
+            };
+        } else {
+            $data = Cache::get('eventify-cached-data');
+        }
     }
 }

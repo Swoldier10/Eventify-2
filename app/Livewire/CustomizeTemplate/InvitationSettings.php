@@ -2,6 +2,7 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Filament\Pages\EditTemplate;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
@@ -27,9 +28,9 @@ class InvitationSettings extends Component implements HasForms
 
     public function mount($eventType=null): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
-        $this->form->fill($cachedData);
+        $this->form->fill($this->data);
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View

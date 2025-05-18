@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use Coolsam\Flatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -33,20 +34,9 @@ class AdvancedCustomization extends Component implements HasForms
 
     public function mount($eventType=null): void
     {
-        if ($eventType === null) {
-            $eventTypeId = EditTemplate::getCurrentInvitation()->event_type_id;
-
-            $this->eventType = match ($eventTypeId) {
-                1 => 'wedding',
-                2 => 'baptism',
-                default => 'party',
-            };
-        } else {
-            $this->eventType = $eventType;
-        }
-
-        $cachedData = Cache::get('eventify-cached-data');
-        $this->form->fill($cachedData);
+        EditTemplate::initData($this->data, $eventType);
+        $this->eventType = $eventType;
+        $this->form->fill($this->data);
     }
 
     public function form(Form $form): Form
@@ -194,12 +184,15 @@ class AdvancedCustomization extends Component implements HasForms
                                             ->placeholder(__('translations.Do you want to tell us something?'))
                                             ->label(__('translations.Replace question message with another text'))
                                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.If needed, you can replace the standard message question in the confirmation form.')),
-                                        DateTimePicker::make('confirmation_deadline')
-                                            ->live(onBlur: true)
-                                            ->format('d/m/Y')
-                                            ->seconds(false)
+                                        Flatpickr::make('confirmation_deadline')
+                                            ->placeholder(__('translations.Select date'))
                                             ->label(__('translations.Confirmation deadline'))
                                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.If you choose a deadline for confirmation, we will display text above the confirmation form to specify this.'))
+                                            ->required()
+                                            ->live()
+                                            ->minDate(today())
+                                            ->time(true)
+                                            ->seconds(false),
                                     ]),
                                 Tabs\Tab::make(__('translations.General'))
                                     ->schema([

@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "aymanalhattami/filament-page-with-sidebar": "^2.6",
+        "coolsam/flatpickr": "^4.1",
         "eightynine/filament-advanced-widgets": "^3.0",
         "filament/filament": "^3.3",
         "jaocero/radio-deck": "^1.2",

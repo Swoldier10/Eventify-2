@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9174844a9cbb4f6b992a1d897d4bd89b",
+    "content-hash": "57e2ce6b0a23885784609c29dfd588a2",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -570,6 +570,82 @@
                 }
             ],
             "time": "2024-09-19T14:15:21+00:00"
+        },
+        {
+            "name": "coolsam/flatpickr",
+            "version": "v4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coolsam726/flatpickr.git",
+                "reference": "5339ea1160f4927cf7f55c8c3ea5eb04f4b9e04c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coolsam726/flatpickr/zipball/5339ea1160f4927cf7f55c8c3ea5eb04f4b9e04c",
+                "reference": "5339ea1160f4927cf7f55c8c3ea5eb04f4b9e04c",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3",
+                "php": "^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "barryvdh/laravel-ide-helper": "^3.5",
+                "laravel/pint": "^1.0",
+                "nunomaduro/larastan": "^3.1.0",
+                "orchestra/testbench": "^9.12",
+                "pestphp/pest-plugin-laravel": "^3.1",
+                "pestphp/pest-plugin-livewire": "^3.0",
+                "phpstan/extension-installer": "^1.4.3",
+                "spatie/laravel-ray": "^1.39"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Flatpickr": "FilamentFlatpickr"
+                    },
+                    "providers": [
+                        "Coolsam\\Flatpickr\\FlatpickrServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Coolsam\\Flatpickr\\": "src/",
+                    "Coolsam\\Flatpickr\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sam Maosa",
+                    "email": "maosa.sam@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Flatpickr input for Filamentphp",
+            "homepage": "https://github.com/coolsam/flatpickr",
+            "keywords": [
+                "coolsam",
+                "flatpickr",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/coolsam/flatpickr/issues",
+                "source": "https://github.com/coolsam/flatpickr"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/coolsam",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-19T17:24:55+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -11267,12 +11343,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
