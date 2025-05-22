@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -17,8 +18,10 @@ use Filament\Forms\Get;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\HtmlString;
 use JaOcero\RadioDeck\Forms\Components\RadioDeck;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -30,10 +33,14 @@ class DetailsOfCelebrants extends Component implements HasForms
 
     public ?string $eventType;
 
-    public function mount($eventType=null): void
+    public function mount($eventType = null): void
     {
         EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
+
+        if (Filament::getTenant()) {
+            $this->data['photo_type'] = Filament::getTenant()->celebrantsImageDisplayType;
+        }
         $this->form->fill($this->data);
     }
 
@@ -68,7 +75,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         TextInput::make('bride_last_name')
                             ->live(onBlur: true)
                             ->label(__("translations.Bride's last name"))
@@ -76,7 +86,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         TextInput::make('groom_first_name')
                             ->live(onBlur: true)
                             ->label(__("translations.Groom's first name"))
@@ -84,7 +97,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         TextInput::make('groom_last_name')
                             ->live(onBlur: true)
                             ->label(__("translations.Groom's last name"))
@@ -92,7 +108,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         Placeholder::make('')
                             ->hiddenLabel()
                             ->columnSpan(2)
@@ -113,6 +132,9 @@ class DetailsOfCelebrants extends Component implements HasForms
                                     ->hiddenLabel()
                                     ->color('primary')
                                     ->required()
+                                    ->validationMessages([
+                                        'required' => __('translations.This field is required.'),
+                                    ])
                                     ->columnSpan(3)
                                     ->default('individual_photo')
                                     ->options([
@@ -147,7 +169,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         FileUpload::make('groom_photo')
                             ->live(onBlur: true)
                             ->image()
@@ -161,7 +186,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'default' => 2,
                                 'md' => 1
                             ])
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         Textarea::make('bride_text')
                             ->live(onBlur: true)
                             ->placeholder(__('translations.Some words about the bride'))
@@ -199,7 +227,10 @@ class DetailsOfCelebrants extends Component implements HasForms
                                     ->extraAttributes([
                                         'class' => 'w-1/2 md:w-full ml-auto mr-auto'
                                     ])
-                                    ->required(),
+                                    ->required()
+                                    ->validationMessages([
+                                        'required' => __('translations.This field is required.'),
+                                    ]),
                                 Textarea::make('common_text')
                                     ->live(onBlur: true)
                                     ->placeholder(__('translations.Some words about you'))
@@ -247,6 +278,9 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->columnSpan(2)
                             ->label(__('translations.Names of the Godparents'))
                             ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ])
                             ->placeholder('Ex. Mara ' . __('translations.and') . ' Daniel Popescu'),
                         Placeholder::make('')
                             ->hiddenLabel()
@@ -358,6 +392,9 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->columnSpan(2)
                             ->label(__('translations.Names of the Godparents'))
                             ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ])
                             ->placeholder('Ex. Mara ' . __('translations.and') . ' Daniel Popescu'),
                         Placeholder::make('')
                             ->hiddenLabel()
@@ -379,21 +416,69 @@ class DetailsOfCelebrants extends Component implements HasForms
 
     public function updatedData(): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        if ($invitation = Filament::getTenant()) {
+            $data = $this->form->getState();
 
-        foreach ($this->data ?? [] as $key => $value) {
-            if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile) {
-                $uploaded = head($this->data[$key]);
-                $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+            if ($data['bride_photo'] && !str_contains($data['bride_photo'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['bride_photo']);
+                $to = public_path('storage/invitationImages/' . $data['bride_photo']);
 
-                $cachedData[$key] = $uploaded
-                    ->storeAs('invitationImages', $filename, 'public');
-            } else {
-                $cachedData[$key] = $value;
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['bride_photo'] = 'invitationImages/' . $data['bride_photo'];
+                $this->data['bride_photo'] = [$data['bride_photo']];
             }
-        }
 
-        Cache::put('eventify-cached-data', $cachedData);
+            if ($data['groom_photo'] && !str_contains($data['groom_photo'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['groom_photo']);
+                $to = public_path('storage/invitationImages/' . $data['groom_photo']);
+
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['groom_photo'] = 'invitationImages/' . $data['groom_photo'];
+                $this->data['groom_photo'] = [$data['groom_photo']];
+            }
+
+            $invitation->update([
+                "bride_first_name" => $data['bride_first_name'],
+                "bride_last_name" => $data['bride_last_name'],
+                "groom_first_name" => $data['groom_first_name'],
+                "groom_last_name" => $data['groom_last_name'],
+                "bride_photo" => $data['bride_photo'],
+                "groom_photo" => $data['groom_photo'],
+                "bride_text" => $data['bride_text'],
+                "groom_text" => $data['groom_text'],
+                "godparents" => $data['godparents'],
+                "parents" => $data['parents']
+            ]);
+        } else {
+            $cachedData = Cache::get('eventify-cached-data');
+
+            foreach ($this->data ?? [] as $key => $value) {
+                if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile) {
+                    $uploaded = head($this->data[$key]);
+                    $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+
+                    $cachedData[$key] = $uploaded
+                        ->storeAs('invitationImages', $filename, 'public');
+                } else {
+                    $cachedData[$key] = $value;
+                }
+            }
+
+            Cache::put('eventify-cached-data', $cachedData);
+        }
+    }
+
+    #[On('validateData')]
+    public function validateData(): void
+    {
+        $this->form->getState();
+        $this->dispatch('nextPage', afterValidation: true)->to(Index::class);
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View

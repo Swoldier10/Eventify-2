@@ -4,6 +4,7 @@ namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Placeholder;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use function PHPUnit\Framework\isReadable;
 
 class InvitationSettings extends Component implements HasForms
 {
@@ -31,6 +33,15 @@ class InvitationSettings extends Component implements HasForms
         EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
         $this->form->fill($this->data);
+
+        if ($this->data['confirmation_possibility']){
+            $this->data['options'][] = 'offer_confirmation_possibility';
+        }
+
+        if ($this->data['limit_confirmation_once']){
+            $this->data['options'][] = 'limit_to_one_confirmation';
+        }
+
     }
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -135,20 +146,31 @@ class InvitationSettings extends Component implements HasForms
 
     public function updatedData(): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        if ($invitation = Filament::getTenant()){
+            $data = $this->form->getState();
 
-        foreach ($this->data ?? [] as $key => $value) {
-            if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile){
-                $uploaded = head($this->data[$key]);
-                $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+            $invitation->update([
+                'invitation_link' => $data['invitation_link'],
+                'confirmation_possibility' => in_array('offer_confirmation_possibility', $data['options']),
+                'limit_confirmation_once' => in_array('limit_to_one_confirmation', $data['options']),
+                'password' => $data['password'],
+            ]);
+        }else{
+            $cachedData = Cache::get('eventify-cached-data');
 
-                $cachedData[$key] = $uploaded
-                    ->storeAs('invitationImages', $filename, 'public');
-            }else{
-                $cachedData[$key] = $value;
+            foreach ($this->data ?? [] as $key => $value) {
+                if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile){
+                    $uploaded = head($this->data[$key]);
+                    $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+
+                    $cachedData[$key] = $uploaded
+                        ->storeAs('invitationImages', $filename, 'public');
+                }else{
+                    $cachedData[$key] = $value;
+                }
             }
-        }
 
-        Cache::put('eventify-cached-data', $cachedData);
+            Cache::put('eventify-cached-data', $cachedData);
+        }
     }
 }

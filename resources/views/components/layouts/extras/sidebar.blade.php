@@ -124,8 +124,8 @@
                 </button>
             </li>
             <li>
-                <button
-                    wire:click="selectPage(6)"
+                <a
+                    href="{{ \Filament\Facades\Filament::getLoginUrl() }}"
                     class="flex items-center justify-start {{ $selectedPageIndex == 6 ? 'bg-gray-100' : '' }} p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group w-full">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -136,7 +136,7 @@
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">{{ __('translations.Payment') }}</span>
                     </div>
-                </button>
+                </a>
             </li>
         </ul>
     </div>

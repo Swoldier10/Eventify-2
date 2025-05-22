@@ -4,6 +4,7 @@ namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
 use App\Models\Invitation;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\HtmlString;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 
@@ -25,7 +27,7 @@ class GeneralInfo extends Component implements HasForms
 
     public ?string $eventType;
 
-    public function mount($eventType=null): void
+    public function mount($eventType = null): void
     {
         EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
@@ -64,7 +66,10 @@ class GeneralInfo extends Component implements HasForms
                             ->label(__('translations.The title of the invitation'))
                             ->columnSpan(2)
                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.This title will be displayed to the guests during distribution.'))
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                            ]),
                         TextInput::make('email')
                             ->email()
                             ->live(onBlur: true)
@@ -74,7 +79,11 @@ class GeneralInfo extends Component implements HasForms
                                 'md' => 1,
                             ])
                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.The email address where we will send notifications about your invitation.'))
-                            ->required(),
+                            ->required()
+                            ->validationMessages([
+                                'required' => __('translations.This field is required.'),
+                                'email' => __('translations.Please enter a valid email address.'),
+                            ]),
                         TextInput::make('secondary_email')
                             ->email()
                             ->live(onBlur: true)
@@ -91,18 +100,35 @@ class GeneralInfo extends Component implements HasForms
 
     public function updatedData(): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        if ($invitation = Filament::getTenant()) {
+            $data = $this->form->getState();
 
-        foreach ($this->data ?? [] as $key => $value) {
-            $cachedData[$key] = $value;
+            $invitation->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'secondary_email' => $data['secondary_email'],
+            ]);
+        } else {
+            $cachedData = Cache::get('eventify-cached-data');
+
+            foreach ($this->data ?? [] as $key => $value) {
+                $cachedData[$key] = $value;
+            }
+
+            Cache::put('eventify-cached-data', $cachedData);
         }
-
-        Cache::put('eventify-cached-data', $cachedData);
     }
 
 
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
         return view('livewire.customize-template.general-info');
+    }
+
+    #[On('validateData')]
+    public function validateData(): void
+    {
+        $this->form->getState();
+        $this->dispatch('nextPage', afterValidation: true)->to(Index::class);
     }
 }

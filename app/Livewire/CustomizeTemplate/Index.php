@@ -14,6 +14,7 @@ use Filament\Pages\SimplePage;
 use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
+use Livewire\Attributes\On;
 
 class Index extends SimplePage implements HasForms, HasActions
 {
@@ -30,7 +31,7 @@ class Index extends SimplePage implements HasForms, HasActions
 
     public int $selectedPageIndex = 0;
 
-    public function mount($eventType=null)
+    public function mount($eventType = null)
     {
         $this->eventType = $eventType;
     }
@@ -40,9 +41,38 @@ class Index extends SimplePage implements HasForms, HasActions
         $this->selectedPageIndex = $index;
     }
 
-    public function nextPage(): void
+
+    #[On('nextPage')]
+    public function nextPage(bool $afterValidation = false): void
     {
-        $this->selectedPageIndex++;
+        if ($afterValidation) {
+            $this->selectedPageIndex++;
+            return;
+        }
+
+        switch ($this->selectedPageIndex) {
+            case 0:
+                $this->dispatch('validateData')->to(GeneralInfo::class);
+                break;
+            case 1:
+                $this->dispatch('validateData')->to(DetailsOfCelebrants::class);
+                break;
+            case 2:
+                $this->dispatch('validateData')->to(Locations::class);
+                break;
+            case 3:
+                $this->dispatch('validateData')->to(AdvancedCustomization::class);
+                break;
+            case 4:
+                $this->dispatch('validateData')->to(InvitationType::class);
+                break;
+            case 5:
+                $this->dispatch('validateData')->to(InvitationSettings::class);
+                break;
+            default:
+                $this->selectedPageIndex++;
+                break;
+        }
     }
 
     public function prevPage(): void
@@ -58,12 +88,11 @@ class Index extends SimplePage implements HasForms, HasActions
             ->form([
                 TextInput::make('input')
             ])
-            ->action(fn () => dd('dadjajdaj'));
+            ->action(fn() => dd('dadjajdaj'));
     }
 
     public function toLogin(): void
     {
         $this->redirect(Filament::getRegistrationUrl());
     }
-
 }

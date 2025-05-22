@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Invitation extends Model
@@ -95,5 +96,22 @@ class Invitation extends Model
     public function tableArrangement(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(TableArrangement::class);
+    }
+
+    public function celebrantsImageDisplayType(): Attribute
+    {
+        $displayType = 'no_photo';
+
+        if ($this->bride_photo){
+            $displayType = 'individual_photo';
+        }
+
+        if ($this->couple_photo){
+            $displayType = 'common_photo';
+        }
+
+        return Attribute::make(
+            get: fn() => $displayType
+        );
     }
 }

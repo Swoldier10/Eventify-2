@@ -208,5 +208,6 @@ return [
     'Our baptism' => 'Botezul nostru',
     'Some words about the children' => 'Câteva cuvinte despre copii',
     'This text will replace the description in the section dedicated to the child.' => 'Acest text va înlocui descrierea din secțiunea dedicată copilului.',
-    'Last settings for your invitation' => 'Ultimele setǎri pentru invitația ta'
+    'Last settings for your invitation' => 'Ultimele setǎri pentru invitația ta',
+    'This field is required.' => 'Acest camp este obligatoriu'
 ];

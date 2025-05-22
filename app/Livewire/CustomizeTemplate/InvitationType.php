@@ -11,6 +11,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Support\HtmlString;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class InvitationType extends Component implements HasForms
@@ -69,5 +70,12 @@ class InvitationType extends Component implements HasForms
                 ])
             ])
             ->statePath('data');
+    }
+
+    #[On('validateData')]
+    public function validateData(): void
+    {
+        $this->form->getState();
+        $this->dispatch('nextPage', afterValidation: true)->to(Index::class);
     }
 }

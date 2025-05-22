@@ -4,6 +4,7 @@ namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
 use Coolsam\Flatpickr\Forms\Components\Flatpickr;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -19,8 +20,10 @@ use Filament\Forms\Form;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\HtmlString;
 use JaOcero\RadioDeck\Forms\Components\RadioDeck;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -32,7 +35,7 @@ class AdvancedCustomization extends Component implements HasForms
 
     public ?string $eventType;
 
-    public function mount($eventType=null): void
+    public function mount($eventType = null): void
     {
         EditTemplate::initData($this->data, $eventType);
         $this->eventType = $eventType;
@@ -112,6 +115,9 @@ class AdvancedCustomization extends Component implements HasForms
                                             ->hiddenLabel()
                                             ->color('primary')
                                             ->required()
+                                            ->validationMessages([
+                                                'required' => __('translations.This field is required.'),
+                                            ])
                                             ->default('party')
                                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.Choose the event for which the countdown will be calculated.'))
                                             ->options([
@@ -192,7 +198,10 @@ class AdvancedCustomization extends Component implements HasForms
                                             ->live()
                                             ->minDate(today())
                                             ->time(true)
-                                            ->seconds(false),
+                                            ->seconds(false)
+                                            ->validationMessages([
+                                                'required' => __('translations.This field is required.'),
+                                            ]),
                                     ]),
                                 Tabs\Tab::make(__('translations.General'))
                                     ->schema([
@@ -281,6 +290,9 @@ class AdvancedCustomization extends Component implements HasForms
                                             ->hiddenLabel()
                                             ->color('primary')
                                             ->required()
+                                            ->validationMessages([
+                                                'required' => __('translations.This field is required.'),
+                                            ])
                                             ->default('party')
                                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.Choose the event for which the countdown will be calculated.'))
                                             ->options([
@@ -358,6 +370,10 @@ class AdvancedCustomization extends Component implements HasForms
                                             ->seconds(false)
                                             ->label(__('translations.Confirmation deadline'))
                                             ->hintIcon('heroicon-m-question-mark-circle', tooltip: __('translations.If you choose a deadline for confirmation, we will display text above the confirmation form to specify this.'))
+                                            ->required()
+                                            ->validationMessages([
+                                                'required' => __('translations.This field is required.'),
+                                            ])
                                     ]),
                                 Tabs\Tab::make(__('translations.General'))
                                     ->schema([
@@ -381,6 +397,13 @@ class AdvancedCustomization extends Component implements HasForms
             ->statePath('data');
     }
 
+    #[On('validateData')]
+    public function validateData(): void
+    {
+        $this->form->getState();
+        $this->dispatch('nextPage', afterValidation: true)->to(Index::class);
+    }
+
     public function render(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
     {
         return view('livewire.customize-template.advanced-customization');
@@ -388,20 +411,94 @@ class AdvancedCustomization extends Component implements HasForms
 
     public function updatedData(): void
     {
-        $cachedData = Cache::get('eventify-cached-data');
+        if ($invitation = Filament::getTenant()) {
+            $data = $this->form->getState();
 
-        foreach ($this->data ?? [] as $key => $value) {
-            if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile) {
-                $uploaded = head($this->data[$key]);
-                $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+            if ($data['background_photo_first_page'] && !str_contains($data['background_photo_first_page'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['background_photo_first_page']);
+                $to = public_path('storage/invitationImages/' . $data['background_photo_first_page']);
 
-                $cachedData[$key] = $uploaded
-                    ->storeAs('invitationImages', $filename, 'public');
-            } else {
-                $cachedData[$key] = $value;
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['background_photo_first_page'] = 'invitationImages/' . $data['background_photo_first_page'];
+                $this->data['background_photo_first_page'] = [$data['background_photo_first_page']];
             }
-        }
 
-        Cache::put('eventify-cached-data', $cachedData);
+            if ($data['countdown_image'] && !str_contains($data['countdown_image'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['countdown_image']);
+                $to = public_path('storage/invitationImages/' . $data['countdown_image']);
+
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['countdown_image'] = 'invitationImages/' . $data['countdown_image'];
+                $this->data['countdown_image'] = [$data['countdown_image']];
+            }
+
+            if ($data['couple_section_image'] && !str_contains($data['couple_section_image'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['couple_section_image']);
+                $to = public_path('storage/invitationImages/' . $data['couple_section_image']);
+
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['couple_section_image'] = 'invitationImages/' . $data['couple_section_image'];
+                $this->data['couple_section_image'] = [$data['couple_section_image']];
+            }
+
+            if ($data['whatsapp_thumbnail'] && !str_contains($data['whatsapp_thumbnail'], 'invitationImages')) {
+                $from = public_path('storage/' . $data['whatsapp_thumbnail']);
+                $to = public_path('storage/invitationImages/' . $data['whatsapp_thumbnail']);
+
+                if (File::exists($from)) {
+                    File::move($from, $to);
+                }
+
+                $data['whatsapp_thumbnail'] = 'invitationImages/' . $data['whatsapp_thumbnail'];
+                $this->data['whatsapp_thumbnail'] = [$data['whatsapp_thumbnail']];
+            }
+
+            $invitation->update([
+                "background_photo_first_page" => $data['background_photo_first_page'],
+                "invitation_subtitle" => $data['invitation_subtitle'],
+                "title_color" => $data['title_color'],
+                "subtitle_color" => $data['subtitle_color'],
+                "countdown_image" => $data['countdown_image'],
+                "countdown_text" => $data['countdown_text'],
+                "countdown" => $data['countdown'],
+                "couple_section_image" => $data['couple_section_image'],
+                "description_title" => $data['description_title'],
+                "description_subtitle" => $data['description_subtitle'],
+                "description_section_text" => $data['description_section_text'],
+                "need_accommodation" => $data['need_accommodation'],
+                "need_vegetarian_menu" => $data['need_vegetarian_menu'],
+                "possibility_to_select_nr_kids" => $data['possibility_to_select_nr_kids'],
+                "additional_question" => $data['additional_question'],
+                "additional_text" => $data['additional_text'],
+                "confirmation_deadline" => $data['confirmation_deadline'],
+                "whatsapp_thumbnail" => $data['whatsapp_thumbnail'],
+                "text_displayed_when_sharing" => $data['text_displayed_when_sharing'],
+            ]);
+        } else {
+            $cachedData = Cache::get('eventify-cached-data');
+
+            foreach ($this->data ?? [] as $key => $value) {
+                if (is_array($this->data[$key]) && head($this->data[$key]) instanceof TemporaryUploadedFile) {
+                    $uploaded = head($this->data[$key]);
+                    $filename = now()->timestamp . '_' . $uploaded->getClientOriginalName();
+
+                    $cachedData[$key] = $uploaded
+                        ->storeAs('invitationImages', $filename, 'public');
+                } else {
+                    $cachedData[$key] = $value;
+                }
+            }
+
+            Cache::put('eventify-cached-data', $cachedData);
+        }
     }
 }
