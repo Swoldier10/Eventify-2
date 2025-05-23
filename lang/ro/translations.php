@@ -209,5 +209,11 @@ return [
     'Some words about the children' => 'Câteva cuvinte despre copii',
     'This text will replace the description in the section dedicated to the child.' => 'Acest text va înlocui descrierea din secțiunea dedicată copilului.',
     'Last settings for your invitation' => 'Ultimele setǎri pentru invitația ta',
-    'This field is required.' => 'Acest camp este obligatoriu'
+    'This field is required.' => 'Acest camp este obligatoriu',
+    'Your account is now set up and ready to go!' => 'Contul tău este acum configurat și gata să îți folosești!',
+    'Press the button below to create your first invitation' => 'Apasă butonul de mai jos pentru a crea prima invitație',
+    'Choose an invitation' => 'Alegeți o invitație',
+    'Next Steps' => 'Pașii următori',
+    'Your account has been successfully created' => 'Contul dvs. a fost creat cu succes',
+    'Welcome to Eventify' => 'Bine ați venit la Eventify'
 ];

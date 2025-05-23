@@ -16,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use function PHPUnit\Framework\isReadable;
@@ -173,5 +174,12 @@ class InvitationSettings extends Component implements HasForms
 
             Cache::put('eventify-cached-data', $cachedData);
         }
+    }
+
+    #[On('validateData')]
+    public function validateData(): void
+    {
+        $this->form->getState();
+        $this->dispatch('nextPage', afterValidation: true)->to(Index::class);
     }
 }

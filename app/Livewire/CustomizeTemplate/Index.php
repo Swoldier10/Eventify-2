@@ -2,7 +2,9 @@
 
 namespace App\Livewire\CustomizeTemplate;
 
+use App\Livewire\Components\PricingPlans;
 use App\Models\Invitation;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -13,6 +15,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\SimplePage;
 use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Livewire\Attributes\On;
 
@@ -41,7 +44,6 @@ class Index extends SimplePage implements HasForms, HasActions
         $this->selectedPageIndex = $index;
     }
 
-
     #[On('nextPage')]
     public function nextPage(bool $afterValidation = false): void
     {
@@ -64,7 +66,7 @@ class Index extends SimplePage implements HasForms, HasActions
                 $this->dispatch('validateData')->to(AdvancedCustomization::class);
                 break;
             case 4:
-                $this->dispatch('validateData')->to(InvitationType::class);
+                $this->dispatch('validateData')->to(PricingPlans::class);
                 break;
             case 5:
                 $this->dispatch('validateData')->to(InvitationSettings::class);
@@ -85,19 +87,9 @@ class Index extends SimplePage implements HasForms, HasActions
         return Action::make('viewTemplate')
             ->label(__('translations.Preview'))
             ->icon('heroicon-m-eye')
-            ->extraAttributes([
-                'class' => 'bg-[#ebca7e] hover:bg-[#d4b068]',
-                'style' => 'background-color: #ebca7e !important'
-            ])
-//            ->color(Color::hex('#ebca7e'))
             ->form([
                 TextInput::make('input')
             ])
             ->action(fn() => dd('dadjajdaj'));
-    }
-
-    public function toLogin(): void
-    {
-        $this->redirect(Filament::getRegistrationUrl());
     }
 }

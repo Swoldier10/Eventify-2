@@ -16,7 +16,7 @@ class RegisterResponse extends RegistrationResponse
         $data = Cache::get('eventify-cached-data');
 
         if ($data) {
-            $paymentUrl = null;
+            $paymentUrl = route('successfully-registered');
             if (isset($data['selected_plan']) && $data['selected_plan'] == 1) {
                 Log::info('Basic Plan Selected');
                 $paymentUrl = 'https://buy.stripe.com/test_5kA6rS1R21HY3bG7ss?prefilled_email=' . Auth::user()?->email;

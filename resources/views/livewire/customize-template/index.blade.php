@@ -47,15 +47,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
                 </svg>
             </button>
-            <button type="button"
-                    wire:click="toLogin"
-                    class="{{ $selectedPageIndex !== 6 ? 'hidden' : '' }} flex gap-2 float-right items-center font-bold focus:outline-none text-white bg-[#ebca7e] hover:bg-yellow-500 focus:ring-4 focus:ring-[#d2ad57] rounded-lg text-sm px-5 py-2 mb-2 dark:focus:ring-yellow-900">
-                @lang('translations.Next step')
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                     stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                </svg>
-            </button>
         </div>
     </div>
 

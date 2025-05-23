@@ -23,13 +23,13 @@ class InvitationType extends Component implements HasForms
     public function mount(): void
     {
         $data = [];
-        foreach (Plan::all() ?? [] as $plan){
+        foreach (Plan::all() ?? [] as $plan) {
             $data[$plan->id] = [
                 'name' => $plan->name,
                 'price' => $plan->price,
             ];
 
-            foreach ($plan->features ?? [] as $feature){
+            foreach ($plan->features ?? [] as $feature) {
                 $data[$plan->id]['specs'][] = $feature->name;
             }
         }
@@ -47,13 +47,13 @@ class InvitationType extends Component implements HasForms
         return $form
             ->schema([
                 Section::make('')
-                ->schema([
-                    Placeholder::make('title')
-                        ->columnSpan(2)
-                        ->hiddenLabel()
-                        ->content(function () {
-                            $title = __('translations.Invitation type');
-                            return new HtmlString('
+                    ->schema([
+                        Placeholder::make('title')
+                            ->columnSpan(2)
+                            ->hiddenLabel()
+                            ->content(function () {
+                                $title = __('translations.Invitation type');
+                                return new HtmlString('
                                  <div class="flex justify-center mb-1">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                          stroke="currentColor" class="w-6 h-6">
@@ -63,11 +63,11 @@ class InvitationType extends Component implements HasForms
                                 </div>
 
                                 <h5 class="text-xl font-medium text-gray-900 text-center mb-6">' . $title . '</h5>');
-                        }),
-                    Livewire::make(PricingPlans::class, [
-                        'plans' => $this->data['plans']
+                            }),
+                        Livewire::make(PricingPlans::class, [
+                            'plans' => $this->data['plans']
+                        ])
                     ])
-                ])
             ])
             ->statePath('data');
     }

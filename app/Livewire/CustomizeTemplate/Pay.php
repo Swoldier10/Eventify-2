@@ -64,7 +64,6 @@ class Pay extends Component implements HasForms
                             ->icon('icon-arrow-right')
                             ->iconPosition(IconPosition::After)
                             ->url(fn() => Filament::getRegistrationUrl())
-                            ->color(Color::hex('#ebca7e'))
                             ->extraAttributes([
                                 'style' => 'left:50%; transform: translate(-50%, -50%);margin-top: 15px',
                             ])
