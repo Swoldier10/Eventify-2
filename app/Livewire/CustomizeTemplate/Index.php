@@ -83,8 +83,13 @@ class Index extends SimplePage implements HasForms, HasActions
     public function viewTemplate(): Action
     {
         return Action::make('viewTemplate')
-            ->label(__('translations.View template'))
-            ->color(Color::hex('#ebca7e'))
+            ->label(__('translations.Preview'))
+            ->icon('heroicon-m-eye')
+            ->extraAttributes([
+                'class' => 'bg-[#ebca7e] hover:bg-[#d4b068]',
+                'style' => 'background-color: #ebca7e !important'
+            ])
+//            ->color(Color::hex('#ebca7e'))
             ->form([
                 TextInput::make('input')
             ])

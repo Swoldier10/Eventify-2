@@ -34,11 +34,11 @@ class InvitationSettings extends Component implements HasForms
         $this->eventType = $eventType;
         $this->form->fill($this->data);
 
-        if ($this->data['confirmation_possibility']){
+        if (isset($this->data['confirmation_possibility'])){
             $this->data['options'][] = 'offer_confirmation_possibility';
         }
 
-        if ($this->data['limit_confirmation_once']){
+        if (isset($this->data['limit_confirmation_once'])){
             $this->data['options'][] = 'limit_to_one_confirmation';
         }
 
@@ -78,9 +78,10 @@ class InvitationSettings extends Component implements HasForms
                             ->schema([
                                 Placeholder::make('')
                                     ->content(function () {
-                                        return new HtmlString('<h5 class="mb-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-300">' . __('translations.Choose the invitation link') . '</h5>');
+                                        return new HtmlString('<h5 class="mb-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-300">' . __('translations.Choose the invitation link') . '  <span class="text-red-500">*</span></h5>');
                                     }),
                                 TextInput::make('invitation_link')
+                                    ->required()
                                     ->live(onBlur: true)
                                     ->hiddenLabel()
                                     ->prefix('www.eventify.ro/i/')

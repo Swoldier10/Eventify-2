@@ -33,9 +33,9 @@ class Locations extends Component implements HasForms
         $this->eventType = $eventType;
         $this->form->fill($this->data);
 
-        $this->data['civil_wedding_date_time'] = $this->data['civil_wedding_datepicker'];
-        $this->data['religious_wedding_date_time'] = $this->data['religious_wedding_datepicker'];
-        $this->data['party_date_time'] = $this->data['party_datepicker'];
+        $this->data['civil_wedding_date_time'] = $this->data['civil_wedding_datepicker'] ?? null;
+        $this->data['religious_wedding_date_time'] = $this->data['religious_wedding_datepicker'] ?? null;
+        $this->data['party_date_time'] = $this->data['party_datepicker'] ?? null;
 
         $this->data['google_autocomplete_civil_wedding_google_search'] = $this->data['civil_wedding_address'] ? $this->data['civil_wedding_address'] . ', ' . $this->data['civil_wedding_city'] . ', ' . $this->data['civil_wedding_country'] : '';
         $this->data['google_autocomplete_religious_wedding_google_search'] = $this->data['religious_wedding_address'] ? $this->data['religious_wedding_address'] . ', ' . $this->data['religious_wedding_city'] . ', ' . $this->data['religious_wedding_country'] : '';
@@ -71,7 +71,11 @@ class Locations extends Component implements HasForms
                         Placeholder::make('')
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<span class="font-bold text-lg">' . __('translations.Civil wedding') . '</span>');
+                                return new HtmlString('
+                                        <div class="border-b border-gray-300 shadow-sm pb-2 mb-4 mt-8">
+                                            <span class="font-bold text-lg">' . __('translations.Civil wedding') . '</span>
+                                        </div>
+');
                             })
                             ->hiddenLabel(),
                         GoogleAutocomplete::make('civil_wedding_google_search')
@@ -128,7 +132,12 @@ class Locations extends Component implements HasForms
                         Placeholder::make('')
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<span class="font-bold text-lg">' . __('translations.Religious wedding') . '</span>');
+                                return new HtmlString('
+                                    <div class="border-b border-gray-300 shadow-sm pb-2 mb-4 mt-8">
+                                        <span class="font-bold text-lg">' . __('translations.Religious wedding') . '</span>
+                                    </div>
+
+');
                             })
                             ->hiddenLabel(),
                         GoogleAutocomplete::make('religious_wedding_google_search')
@@ -184,7 +193,11 @@ class Locations extends Component implements HasForms
                         Placeholder::make('')
                             ->columnSpan(2)
                             ->content(function () {
-                                return new HtmlString('<span class="font-bold text-lg">' . __('translations.Party') . '</span>');
+                                return new HtmlString('
+                                        <div class="border-b border-gray-300 shadow-sm pb-2 mb-4 mt-8">
+                                            <span class="font-bold text-lg">' . __('translations.Party') . '</span>
+                                        </div>
+');
                             })
                             ->hiddenLabel(),
                         GoogleAutocomplete::make('party_google_search')

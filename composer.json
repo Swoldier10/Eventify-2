@@ -11,6 +11,7 @@
         "coolsam/flatpickr": "^4.1",
         "eightynine/filament-advanced-widgets": "^3.0",
         "filament/filament": "^3.3",
+        "icetalker/filament-table-repeater": "^1.4",
         "jaocero/radio-deck": "^1.2",
         "joaopaulolndev/filament-edit-profile": "^1.0",
         "laravel/framework": "^12.0",

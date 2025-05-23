@@ -255,15 +255,15 @@ class DetailsOfCelebrants extends Component implements HasForms
                                         $subTitle = __("translations.If you want a photo of you together or a photo for each of you to appear, choose one of the options 'Individual photos' or 'Common photo'.");
                                         return new HtmlString('
                                 <button
-                                   class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 mx-auto">
+                                   class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 mx-auto dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                         stroke="currentColor" class="w-6 mx-auto mb-4">
+                                         stroke="currentColor" class="w-6 mx-auto mb-4 dark:text-gray-200">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                               d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"/>
                                     </svg>
 
-                                    <p class="mb-2 text-md font-bold tracking-tight text-gray-900">' . $title . '</p>
-                                    <p class="font-normal text-gray-700">
+                                    <p class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white">' . $title . '</p>
+                                    <p class="font-normal text-gray-700 dark:text-white">
                                         ' . $subTitle . '
                                     </p>
                                 </button>
@@ -419,7 +419,7 @@ class DetailsOfCelebrants extends Component implements HasForms
         if ($invitation = Filament::getTenant()) {
             $data = $this->form->getState();
 
-            if ($data['bride_photo'] && !str_contains($data['bride_photo'], 'invitationImages')) {
+            if (isset($data['bride_photo']) && !str_contains($data['bride_photo'], 'invitationImages')) {
                 $from = public_path('storage/' . $data['bride_photo']);
                 $to = public_path('storage/invitationImages/' . $data['bride_photo']);
 
@@ -431,7 +431,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                 $this->data['bride_photo'] = [$data['bride_photo']];
             }
 
-            if ($data['groom_photo'] && !str_contains($data['groom_photo'], 'invitationImages')) {
+            if (isset($data['groom_photo']) && !str_contains($data['groom_photo'], 'invitationImages')) {
                 $from = public_path('storage/' . $data['groom_photo']);
                 $to = public_path('storage/invitationImages/' . $data['groom_photo']);
 
@@ -444,16 +444,16 @@ class DetailsOfCelebrants extends Component implements HasForms
             }
 
             $invitation->update([
-                "bride_first_name" => $data['bride_first_name'],
-                "bride_last_name" => $data['bride_last_name'],
-                "groom_first_name" => $data['groom_first_name'],
-                "groom_last_name" => $data['groom_last_name'],
-                "bride_photo" => $data['bride_photo'],
-                "groom_photo" => $data['groom_photo'],
-                "bride_text" => $data['bride_text'],
-                "groom_text" => $data['groom_text'],
-                "godparents" => $data['godparents'],
-                "parents" => $data['parents']
+                "bride_first_name" => $data['bride_first_name'] ?? null,
+                "bride_last_name" => $data['bride_last_name'] ?? null,
+                "groom_first_name" => $data['groom_first_name'] ?? null,
+                "groom_last_name" => $data['groom_last_name'] ?? null,
+                "bride_photo" => $data['bride_photo'] ?? null,
+                "groom_photo" => $data['groom_photo'] ?? null,
+                "bride_text" => $data['bride_text'] ?? null,
+                "groom_text" => $data['groom_text'] ?? null,
+                "godparents" => $data['godparents'] ?? null,
+                "parents" => $data['parents'] ?? null
             ]);
         } else {
             $cachedData = Cache::get('eventify-cached-data');
