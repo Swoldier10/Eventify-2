@@ -215,5 +215,9 @@ return [
     'Choose an invitation' => 'Alegeți o invitație',
     'Next Steps' => 'Pașii următori',
     'Your account has been successfully created' => 'Contul dvs. a fost creat cu succes',
-    'Welcome to Eventify' => 'Bine ați venit la Eventify'
+    'Welcome to Eventify' => 'Bine ați venit la Eventify',
+    'There are tables that exceed the maximum number of guests.' => 'Există mese care depășesc numărul maxim de invitați.',
+    'Delete guest' => 'Șterge invitat',
+    'Delete table' => 'Șterge mesa',
+    'No guests' => 'Nu există invitați',
 ];
