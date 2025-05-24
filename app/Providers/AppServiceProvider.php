@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Http\Responses\RegisterResponse;
+use App\Models\User;
+use App\Observers\UserObserver;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        User::observe(UserObserver::class);
         FilamentColor::register([
             'primary' => [
                 50 => '235, 202, 126',
