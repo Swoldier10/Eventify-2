@@ -4,6 +4,8 @@ namespace App\Filament\Pages\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
 use AymanAlhattami\FilamentPageWithSidebar\Traits\HasPageSidebar;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Livewire;
 use Filament\Forms\Form;
@@ -11,8 +13,9 @@ use Filament\Pages\Page;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Contracts\Support\Htmlable;
 
-class GeneralInfo extends Page
+class GeneralInfo extends Page implements HasActions
 {
+    use InteractsWithActions;
     use HasPageSidebar;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
@@ -52,5 +55,10 @@ class GeneralInfo extends Page
     public function getTitle(): string|Htmlable
     {
         return __('translations.General info');
+    }
+
+    public function previewAction(): \Filament\Actions\Action
+    {
+        return EditTemplate::previewAction();
     }
 }

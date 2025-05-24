@@ -31,7 +31,12 @@
             "
            onmouseover="this.style.backgroundColor='#d1b569'"
            onmouseout="this.style.backgroundColor='#ebca7e'">
-            @lang('translations.Create your first invitation') &#8594
+            @lang('translations.Create your first invitation')
+            <span style="display: inline-block; vertical-align: middle; margin-left: 6px;">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#fff" viewBox="0 0 24 24">
+                    <path d="M13 5l7 7-7 7v-4h-8v-6h8V5z"/>
+                 </svg>
+            </span>
         </a>
     </div>
 @endsection

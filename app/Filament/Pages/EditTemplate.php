@@ -12,6 +12,8 @@ use AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar;
 use AymanAlhattami\FilamentPageWithSidebar\PageNavigationItem;
 use AymanAlhattami\FilamentPageWithSidebar\Traits\HasPageSidebar;
 use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
@@ -20,9 +22,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 
-class EditTemplate extends Page
+class EditTemplate extends Page implements HasActions
 {
-    use HasPageSidebar;
+    use HasPageSidebar, InteractsWithActions;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -115,5 +117,15 @@ class EditTemplate extends Page
         } else {
             $data = Cache::get('eventify-cached-data');
         }
+    }
+
+    public static function previewAction(){
+        return Action::make('preview')
+            ->label(__('translations.Preview'))
+            ->icon('heroicon-m-eye')
+            ->form([
+                TextInput::make('input')
+            ])
+            ->action(fn() => dd('dadjajdaj'));
     }
 }
