@@ -220,4 +220,10 @@ return [
     'Delete guest' => 'Șterge invitat',
     'Delete table' => 'Șterge mesa',
     'No guests' => 'Nu există invitați',
+    'Congratulations and welcome, ' => 'Felicitări și bun venit, ',
+    'We’re excited to have you at Eventify! We’re here to make planning your event easy and enjoyable.' => 'Ne bucurăm că ai ales Eventify! Suntem aici să îți oferim o experiență plăcută și ușoară în organizarea evenimentelor.',
+    'Your account has been successfully registered.' => 'Contul tău a fost înregistrat cu succes.',
+    'If you have any questions or need assistance, feel free to reach out. We’re happy to help!' => 'Pentru întrebări sau informații suplimentare, nu ezita să ne contactezi. Suntem bucuroși să te ajutăm!',
+    'All rights reserved.' => 'Toate drepturile rezervate.',
+    'Create your first invitation' => 'Creează prima ta invitație'
 ];

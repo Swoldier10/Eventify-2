@@ -17,8 +17,11 @@
         "joaopaulolndev/filament-edit-profile": "^1.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "mailgun/mailgun-php": "^4.3",
         "malzariey/filament-daterangepicker-filter": "^3.3",
         "pxlrbt/filament-excel": "^2.4",
+        "symfony/http-client": "^7.2",
+        "symfony/mailgun-mailer": "^7.2",
         "tapp/filament-google-autocomplete-field": "^1.0",
         "tobiasla78/filament-simple-pages": "^1.0"
     },

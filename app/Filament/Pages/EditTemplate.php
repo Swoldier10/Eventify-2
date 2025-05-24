@@ -6,24 +6,25 @@ use App\Filament\Pages\CustomizeTemplate\AdvancedCustomization;
 use App\Filament\Pages\CustomizeTemplate\DetailsOfCelebrants;
 use App\Filament\Pages\CustomizeTemplate\GeneralInfo;
 use App\Filament\Pages\CustomizeTemplate\InvitationSettings;
-use App\Filament\Pages\CustomizeTemplate\InvitationType;
 use App\Filament\Pages\CustomizeTemplate\Locations;
 use App\Models\Invitation;
 use AymanAlhattami\FilamentPageWithSidebar\FilamentPageSidebar;
 use AymanAlhattami\FilamentPageWithSidebar\PageNavigationItem;
 use AymanAlhattami\FilamentPageWithSidebar\Traits\HasPageSidebar;
-use Carbon\Carbon;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class EditTemplate extends Page
+class EditTemplate extends Page implements HasActions
 {
-    use HasPageSidebar;
+    use HasPageSidebar, InteractsWithActions;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -45,8 +46,18 @@ class EditTemplate extends Page
 
     public static function sidebar(): FilamentPageSidebar
     {
-        return FilamentPageSidebar::make()
+        return
+            FilamentPageSidebar::make()
+//            ->topbarNavigation()
             ->setNavigationItems([
+//                Action::make('viewTemplate')
+//                    ->label(__('translations.Preview'))
+//                    ->icon('heroicon-m-eye')
+//                    ->form([
+//                        TextInput::make('input')
+//                    ])
+//                    ->action(fn() => dd('dadjajdaj')),
+
                 PageNavigationItem::make(__('translations.General info'))
                     ->url(GeneralInfo::getUrl())
                     ->icon('icon-identification')
@@ -106,5 +117,15 @@ class EditTemplate extends Page
         } else {
             $data = Cache::get('eventify-cached-data');
         }
+    }
+
+    public static function previewAction(){
+        return Action::make('preview')
+            ->label(__('translations.Preview'))
+            ->icon('heroicon-m-eye')
+            ->form([
+                TextInput::make('input')
+            ])
+            ->action(fn() => dd('dadjajdaj'));
     }
 }

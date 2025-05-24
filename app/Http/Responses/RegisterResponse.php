@@ -35,5 +35,6 @@ class RegisterResponse extends RegistrationResponse
 
             return redirect()->to($paymentUrl);
         }
+        return redirect()->to(route('successfully-registered'));
     }
 }
