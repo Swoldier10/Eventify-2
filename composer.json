@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "awcodes/filament-table-repeater": "^3.1",
         "aymanalhattami/filament-page-with-sidebar": "^2.6",
         "coolsam/flatpickr": "^4.1",
         "eightynine/filament-advanced-widgets": "^3.0",

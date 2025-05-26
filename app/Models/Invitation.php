@@ -102,16 +102,21 @@ class Invitation extends Model
     {
         $displayType = 'no_photo';
 
-        if ($this->bride_photo){
+        if ($this->bride_photo) {
             $displayType = 'individual_photo';
         }
 
-        if ($this->couple_photo){
+        if ($this->couple_photo) {
             $displayType = 'common_photo';
         }
 
         return Attribute::make(
             get: fn() => $displayType
         );
+    }
+
+    public function guests()
+    {
+        return $this->hasMany(Guest::class);
     }
 }
