@@ -8,6 +8,7 @@ use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
+use Termwind\Enums\Color;
 
 class GuestOverviewWidget extends AdvancedStatsOverviewWidget
 {
@@ -22,7 +23,7 @@ class GuestOverviewWidget extends AdvancedStatsOverviewWidget
 
                 return Guest::where('user_id', $loggedUserId)
                     ->where('invitation_id', $invitationId)
-                    ->count();
+                    ->sum('nr_of_people');
             })
                 ->icon('heroicon-o-user')
                 ->progress(69)
@@ -30,7 +31,7 @@ class GuestOverviewWidget extends AdvancedStatsOverviewWidget
                 ->iconBackgroundColor('success')
                 ->chartColor('success')
                 ->iconPosition('start')
-                ->description(__('translations.This is the total number of people who have confirmed so far'))
+                ->description(__('translations.This is the total number of people who have confirmed so far, WITHOUT kids'))
                 ->descriptionIcon('heroicon-o-chevron-up', 'before')
                 ->descriptionColor('success')
                 ->iconColor('success'),
@@ -44,8 +45,22 @@ class GuestOverviewWidget extends AdvancedStatsOverviewWidget
                     ->where('nr_of_kids', '>', 0)
                     ->count();
             })
-                ->icon('heroicon-o-face-smile')
+                ->icon('heroicon-o-user-group')
                 ->description(__('translations.This is the total number of families who will be attending with at least one child'))
+                ->descriptionIcon('heroicon-o-chevron-up', 'before')
+                ->descriptionColor('primary')
+                ->iconColor('warning'),
+
+            Stat::make(__('translations.Total number of children'), function (){
+                $loggedUserId = $this->getLoggedUserId();
+                $invitationId = $this->getCurrentInvitationId();
+
+                return Guest::where('user_id', $loggedUserId)
+                    ->where('invitation_id', $invitationId)
+                    ->sum('nr_of_kids');
+            })
+                ->icon('heroicon-o-face-smile')
+                ->description(__('translations.This is the total number of children who will be attending so far'))
                 ->descriptionIcon('heroicon-o-chevron-up', 'before')
                 ->descriptionColor('primary')
                 ->iconColor('warning'),
