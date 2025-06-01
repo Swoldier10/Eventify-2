@@ -8,7 +8,7 @@
             </div>
         @endif
 
-        {{ $this->form }}
+    {{ $this->form }}
     </div>
 
     <script>

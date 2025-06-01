@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\PeaceInvitation;
 use App\Livewire\SuccessfullyRegistered;
 use App\Mail\RegistrationMail;
 use Illuminate\Support\Facades\Mail;
@@ -10,7 +11,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/customize-template/{eventType}', [\App\Livewire\CustomizeTemplate\Index::class, '__invoke'])
+Route::get('/customize-template/{eventType}/{invitationTemplateId}', [\App\Livewire\CustomizeTemplate\Index::class, '__invoke'])
     ->name('customize-template');
 
 Route::get('/success-order', [\App\Livewire\OrderPlaced::class, '__invoke'
@@ -19,3 +20,6 @@ Route::get('/success-order', [\App\Livewire\OrderPlaced::class, '__invoke'
 Route::get('/successfully-registered', SuccessfullyRegistered::class)
     ->name('successfully-registered')
     ->middleware(['auth']);
+
+Route::get('/peace-invitation', PeaceInvitation::class)
+    ->name('peace-invitation');

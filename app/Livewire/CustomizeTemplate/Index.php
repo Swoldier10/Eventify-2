@@ -3,17 +3,21 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Livewire\Components\PricingPlans;
+use App\Livewire\PeaceInvitation;
 use App\Models\Invitation;
+use App\Models\InvitationTemplate;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Livewire;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\SimplePage;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -30,13 +34,14 @@ class Index extends SimplePage implements HasForms, HasActions
 
     public ?string $eventType;
 
-    public Model $invitation;
+    public Model $invitationTemplate;
 
     public int $selectedPageIndex = 0;
 
-    public function mount($eventType = null)
+    public function mount($eventType = null, int $invitationTemplateId = null)
     {
         $this->eventType = $eventType;
+        $this->invitationTemplate = InvitationTemplate::findOrFail($invitationTemplateId);
     }
 
     public function selectPage($index): void
@@ -87,9 +92,10 @@ class Index extends SimplePage implements HasForms, HasActions
         return Action::make('viewTemplate')
             ->label(__('translations.Preview'))
             ->icon('heroicon-m-eye')
-            ->form([
-                TextInput::make('input')
-            ])
-            ->action(fn() => dd('dadjajdaj'));
+            ->form(function (){
+                return [Livewire::make($this->invitationTemplate->class_name)];
+            })
+            ->modalWidth('50%')
+            ->action(fn() => null);
     }
 }
