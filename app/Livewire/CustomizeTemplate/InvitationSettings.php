@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use App\Models\Invitation;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
@@ -19,7 +20,6 @@ use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use function PHPUnit\Framework\isReadable;
 
 class InvitationSettings extends Component implements HasForms
 {
@@ -151,12 +151,11 @@ class InvitationSettings extends Component implements HasForms
         if ($invitation = Filament::getTenant()){
             $data = $this->form->getState();
 
-            $invitation->update([
-                'invitation_link' => $data['invitation_link'],
-                'confirmation_possibility' => in_array('offer_confirmation_possibility', $data['options']),
-                'limit_confirmation_once' => in_array('limit_to_one_confirmation', $data['options']),
-                'password' => $data['password'],
-            ]);
+            foreach (Invitation::$guestsSettingsFields as $field) {
+                $invitation->{$field} = $data[$field];
+            }
+
+            $invitation->save();
         }else{
             $cachedData = Cache::get('eventify-cached-data');
 

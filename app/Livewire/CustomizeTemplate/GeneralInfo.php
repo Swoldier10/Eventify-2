@@ -104,11 +104,11 @@ class GeneralInfo extends Component implements HasForms
         if ($invitation = Filament::getTenant()) {
             $data = $this->form->getState();
 
-            $invitation->update([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'secondary_email' => $data['secondary_email'],
-            ]);
+            foreach (Invitation::$generalInfoFields as $field) {
+                $invitation->{$field} = $data[$field];
+            }
+
+            $invitation->save();
         } else {
             $cachedData = Cache::get('eventify-cached-data');
 

@@ -42,8 +42,8 @@ class OrderPlaced extends Component
 
         $datePickers = [
             'civil_wedding_datepicker' => 'civil_wedding_date_time',
-            'religious_wedding_datepicker' => 'religious_wedding_date_time',
-            'party_datepicker' => 'party_date_time',
+            'religious_wedding_datepicker' => 'religious_wedding_datepicker',
+            'party_datepicker' => 'party_datepicker',
             'confirmation_deadline' => 'confirmation_deadline'
         ];
 

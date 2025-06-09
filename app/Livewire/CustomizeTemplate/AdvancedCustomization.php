@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use App\Models\Invitation;
 use Coolsam\Flatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\ColorPicker;
@@ -414,75 +415,25 @@ class AdvancedCustomization extends Component implements HasForms
         if ($invitation = Filament::getTenant()) {
             $data = $this->form->getState();
 
-            if ($data['background_photo_first_page'] && !str_contains($data['background_photo_first_page'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['background_photo_first_page']);
-                $to = public_path('storage/invitationImages/' . $data['background_photo_first_page']);
+            foreach (Invitation::$advancedCustomizationFields as $field) {
+                if (str_contains($field, 'image') || str_contains($field, 'photo') || str_contains($field, 'thumbnail')) {
+                    if ($data[$field] && !str_contains($data[$field], 'invitationImages')) {
+                        $from = public_path('storage/' . $data[$field]);
+                        $to = public_path('storage/invitationImages/' . $data[$field]);
 
-                if (File::exists($from)) {
-                    File::move($from, $to);
+                        if (File::exists($from)) {
+                            File::move($from, $to);
+                        }
+
+                        $invitation->{$field} = 'invitationImages/' . $data[$field];
+                        $this->data[$field] = [$data[$field]];
+                    }
+                }else{
+                    $invitation->{$field} = $data[$field] ?? null;
                 }
-
-                $data['background_photo_first_page'] = 'invitationImages/' . $data['background_photo_first_page'];
-                $this->data['background_photo_first_page'] = [$data['background_photo_first_page']];
             }
 
-            if ($data['countdown_image'] && !str_contains($data['countdown_image'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['countdown_image']);
-                $to = public_path('storage/invitationImages/' . $data['countdown_image']);
-
-                if (File::exists($from)) {
-                    File::move($from, $to);
-                }
-
-                $data['countdown_image'] = 'invitationImages/' . $data['countdown_image'];
-                $this->data['countdown_image'] = [$data['countdown_image']];
-            }
-
-            if ($data['couple_section_image'] && !str_contains($data['couple_section_image'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['couple_section_image']);
-                $to = public_path('storage/invitationImages/' . $data['couple_section_image']);
-
-                if (File::exists($from)) {
-                    File::move($from, $to);
-                }
-
-                $data['couple_section_image'] = 'invitationImages/' . $data['couple_section_image'];
-                $this->data['couple_section_image'] = [$data['couple_section_image']];
-            }
-
-            if ($data['whatsapp_thumbnail'] && !str_contains($data['whatsapp_thumbnail'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['whatsapp_thumbnail']);
-                $to = public_path('storage/invitationImages/' . $data['whatsapp_thumbnail']);
-
-                if (File::exists($from)) {
-                    File::move($from, $to);
-                }
-
-                $data['whatsapp_thumbnail'] = 'invitationImages/' . $data['whatsapp_thumbnail'];
-                $this->data['whatsapp_thumbnail'] = [$data['whatsapp_thumbnail']];
-            }
-
-            $invitation->update([
-                "background_photo_first_page" => $data['background_photo_first_page'],
-                "invitation_subtitle" => $data['invitation_subtitle'],
-                "title_color" => $data['title_color'],
-                "subtitle_color" => $data['subtitle_color'],
-                "countdown_image" => $data['countdown_image'],
-                "countdown_text" => $data['countdown_text'],
-                "countdown" => $data['countdown'],
-                "couple_section_image" => $data['couple_section_image'],
-                "description_title" => $data['description_title'],
-                "description_subtitle" => $data['description_subtitle'],
-                "description_section_text" => $data['description_section_text'],
-                "need_accommodation" => $data['need_accommodation'],
-                "need_vegetarian_menu" => $data['need_vegetarian_menu'],
-                "possibility_to_select_nr_kids" => $data['possibility_to_select_nr_kids'],
-                "additional_question" => $data['additional_question'],
-                "additional_text" => $data['additional_text'],
-                "confirmation_deadline" => $data['confirmation_deadline'],
-                "whatsapp_thumbnail" => $data['whatsapp_thumbnail'],
-                "text_displayed_when_sharing" => $data['text_displayed_when_sharing'],
-            ]);
+            $invitation->save();
         } else {
             $cachedData = Cache::get('eventify-cached-data');
 

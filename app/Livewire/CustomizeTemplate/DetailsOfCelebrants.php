@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use App\Models\Invitation;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -39,7 +40,7 @@ class DetailsOfCelebrants extends Component implements HasForms
         $this->eventType = $eventType;
 
         if (Filament::getTenant()) {
-            $this->data['photo_type'] = Filament::getTenant()->celebrantsImageDisplayType;
+            $this->data['celebrants_photo_type'] = Filament::getTenant()->celebrantsImageDisplayType;
         }
         $this->form->fill($this->data);
     }
@@ -127,7 +128,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                         return new HtmlString('<div class="font-bold text-base">' . __('translations.Image display mode') . '</div>');
                                     })
                                     ->hintIcon('heroicon-m-question-mark-circle', tooltip: __("translations.Your photos from the couple's section of the invitation will be displayed according to this setting.")),
-                                RadioDeck::make('photo_type')
+                                RadioDeck::make('celebrants_photo_type')
                                     ->live()
                                     ->hiddenLabel()
                                     ->color('primary')
@@ -163,7 +164,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->panelAspectRatio('2:1')
                             ->label(__('translations.Bride photo'))
                             ->visible(function (Get $get) {
-                                return $get('photo_type') == 'individual_photo';
+                                return $get('celebrants_photo_type') == 'individual_photo';
                             })
                             ->columnSpan([
                                 'default' => 2,
@@ -180,7 +181,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                             ->panelAspectRatio('2:1')
                             ->label(__('translations.Groom photo'))
                             ->visible(function (Get $get) {
-                                return $get('photo_type') == 'individual_photo';
+                                return $get('celebrants_photo_type') == 'individual_photo';
                             })
                             ->columnSpan([
                                 'default' => 2,
@@ -198,7 +199,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'md' => 1
                             ])
                             ->visible(function (Get $get) {
-                                return $get('photo_type') == 'individual_photo';
+                                return $get('celebrants_photo_type') == 'individual_photo';
                             })
                             ->hiddenLabel(),
                         Textarea::make('groom_text')
@@ -209,7 +210,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 'md' => 1
                             ])
                             ->visible(function (Get $get) {
-                                return $get('photo_type') == 'individual_photo';
+                                return $get('celebrants_photo_type') == 'individual_photo';
                             })
                             ->hiddenLabel(),
                         Grid::make(1)
@@ -222,7 +223,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                     ->panelAspectRatio('2:1')
                                     ->label(__('translations.Common photo'))
                                     ->visible(function (Get $get) {
-                                        return $get('photo_type') == 'common_photo';
+                                        return $get('celebrants_photo_type') == 'common_photo';
                                     })
                                     ->extraAttributes([
                                         'class' => 'w-1/2 md:w-full ml-auto mr-auto'
@@ -235,7 +236,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                     ->live(onBlur: true)
                                     ->placeholder(__('translations.Some words about you'))
                                     ->visible(function (Get $get) {
-                                        return $get('photo_type') == 'common_photo';
+                                        return $get('celebrants_photo_type') == 'common_photo';
                                     })
                                     ->extraAttributes([
                                         'class' => 'w-1/2 md:w-full ml-auto mr-auto'
@@ -248,7 +249,7 @@ class DetailsOfCelebrants extends Component implements HasForms
                                 Placeholder::make('no_photo_placeholder')
                                     ->hiddenLabel()
                                     ->visible(function (Get $get) {
-                                        return $get('photo_type') == 'no_photo';
+                                        return $get('celebrants_photo_type') == 'no_photo';
                                     })
                                     ->content(function () {
                                         $title = __('translations.We will not display any photos in this section.');
@@ -419,42 +420,23 @@ class DetailsOfCelebrants extends Component implements HasForms
         if ($invitation = Filament::getTenant()) {
             $data = $this->form->getState();
 
-            if (isset($data['bride_photo']) && !str_contains($data['bride_photo'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['bride_photo']);
-                $to = public_path('storage/invitationImages/' . $data['bride_photo']);
+            foreach (Invitation::$celebrantsDetailsFields as $field) {
+                if (str_contains($field, 'photo') && isset($data[$field]) && !str_contains($data[$field], 'invitationImages')) {
+                    $from = public_path('storage/' . $data[$field]);
+                    $to = public_path('storage/invitationImages/' . $data[$field]);
 
-                if (File::exists($from)) {
-                    File::move($from, $to);
+                    if (File::exists($from)) {
+                        File::move($from, $to);
+                    }
+
+                    $invitation->{$field} = 'invitationImages/' . $data[$field];
+                    $this->data[$field] = [$data[$field]];
+                }else{
+                    $invitation->{$field} = $data[$field] ?? null;
                 }
-
-                $data['bride_photo'] = 'invitationImages/' . $data['bride_photo'];
-                $this->data['bride_photo'] = [$data['bride_photo']];
             }
 
-            if (isset($data['groom_photo']) && !str_contains($data['groom_photo'], 'invitationImages')) {
-                $from = public_path('storage/' . $data['groom_photo']);
-                $to = public_path('storage/invitationImages/' . $data['groom_photo']);
-
-                if (File::exists($from)) {
-                    File::move($from, $to);
-                }
-
-                $data['groom_photo'] = 'invitationImages/' . $data['groom_photo'];
-                $this->data['groom_photo'] = [$data['groom_photo']];
-            }
-
-            $invitation->update([
-                "bride_first_name" => $data['bride_first_name'] ?? null,
-                "bride_last_name" => $data['bride_last_name'] ?? null,
-                "groom_first_name" => $data['groom_first_name'] ?? null,
-                "groom_last_name" => $data['groom_last_name'] ?? null,
-                "bride_photo" => $data['bride_photo'] ?? null,
-                "groom_photo" => $data['groom_photo'] ?? null,
-                "bride_text" => $data['bride_text'] ?? null,
-                "groom_text" => $data['groom_text'] ?? null,
-                "godparents" => $data['godparents'] ?? null,
-                "parents" => $data['parents'] ?? null
-            ]);
+            $invitation->save();
         } else {
             $cachedData = Cache::get('eventify-cached-data');
 

@@ -1,6 +1,35 @@
 <!-- Main Container -->
-<div class="flex flex-col md:flex-row min-h-screen bg-[#f6f1f0]">
+<div class="flex flex-col md:flex-row min-h-screen bg-[#f6f1f0] {{ $modalMode ? 'modal-view' : '' }}">
     <style>
+        .modal-view {
+            min-height: 80vh;
+            max-height: none;
+            font-size: 0.9rem;
+            overflow: visible;
+        }
+        .modal-view .sidebar {
+            position: relative !important;
+            width: 240px !important;
+            min-height: auto !important;
+            flex-shrink: 0;
+        }
+        .modal-view .main-content {
+            margin-left: 0 !important;
+        }
+        .modal-view section {
+            padding-top: 3rem !important;
+            padding-bottom: 3rem !important;
+        }
+        .modal-view h1 {
+            font-size: 2.5rem !important;
+        }
+        .modal-view h2 {
+            font-size: 1.8rem !important;
+        }
+        .modal-view h3 {
+            font-size: 1.5rem !important;
+        }
+        
         @keyframes scroll-down {
             0% {
                 transform: translateY(-100%);
@@ -28,21 +57,34 @@
         .animate-number-change {
             animation: number-change 0.3s ease-out;
         }
+
+        /* Additional modal styling */
+        .fi-modal {
+            z-index: 9999 !important;
+        }
+        
+        .fi-modal-window {
+            margin-top: 2rem !important;
+        }
+        
+        .fi-modal-footer {
+            justify-content: flex-end !important;
+        }
     </style>
 
     <!-- Sidebar Navigation -->
-    <div x-data="{ isOpen: false }" class="bg-[#f8f5f1] text-gray-700 md:w-64 md:min-h-screen md:fixed z-50 shadow-sm">
+    <div x-data="{ isOpen: false }" class="bg-[#f8f5f1] text-gray-700 sidebar {{ $modalMode ? '' : 'md:w-64 md:min-h-screen md:fixed' }} z-50 shadow-sm">
         <!-- Celebrants Names - Always visible -->
         <div class="p-8 text-center border-b border-[#d6be9e]/10">
             <h2 class="text-2xl font-light text-[#d6be9e] tracking-wide leading-relaxed">
-                {{ $brideFirstName }}
+                {{ $data['bride_first_name'] }}
                 <span class="block text-lg text-gray-500 my-1">{{ __('translations.and') }}</span>
-                {{ $groomFirstName }}
+                {{ $data['groom_first_name'] }}
             </h2>
         </div>
 
         <!-- Mobile Toggle Button -->
-        <div class="flex justify-between items-center p-6 md:hidden">
+        <div class="flex justify-between items-center p-6 {{ $modalMode ? 'hidden' : 'md:hidden' }}">
             <div class="text-center w-full">
                 <h2 class="text-xl font-light text-[#d6be9e]">{{ __('translations.Menu') }}</h2>
             </div>
@@ -59,7 +101,9 @@
         </div>
 
         <!-- Sidebar Content -->
-        <div :class="{'block': isOpen, 'hidden': !isOpen}" class="md:block">
+        <div 
+            class="{{ $modalMode ? 'block' : 'md:block' }}"
+            @if(!$modalMode) :class="{'block': isOpen, 'hidden': !isOpen}" @endif>
             <!-- Navigation Links -->
             <nav class="py-12">
                 <ul class="space-y-6 text-center">
@@ -104,25 +148,25 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-grow md:ml-64">
+    <div class="flex-grow main-content {{ $modalMode ? '' : 'md:ml-64' }}">
         <!-- Hero Section -->
-        <section id="home" class="h-screen flex items-center justify-center relative">
+        <section id="home" class="{{ $modalMode ? 'h-96' : 'h-screen' }} flex items-center justify-center relative">
             <!-- Background Image with Overlay -->
             <div class="absolute inset-0 z-0">
                 <div
                     class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60 mix-blend-multiply"></div>
-                <img src="{{ asset('storage/' . $mainBackgroundImage) }}" alt="Wedding Background"
+                <img src="{{ asset('storage/' . $data['background_photo_first_page']) }}" alt="Wedding Background"
                      class="w-full h-full object-cover">
             </div>
 
             <!-- Content -->
             <div class="relative z-10 text-center text-white p-8 max-w-4xl mx-auto">
                 <h1 class="text-6xl md:text-8xl font-light mb-6 tracking-wide">
-                    {{ $brideFirstName }}
+                    {{ $data['bride_first_name'] }}
                     <span class="inline-block mx-4 text-4xl md:text-5xl opacity-90">&</span>
-                    {{ $groomFirstName }}
+                    {{ $data['groom_first_name'] }}
                 </h1>
-                <p class="text-xl md:text-2xl mb-4 tracking-widest font-light">{{ Carbon\Carbon::parse($weddingDate)->format('F j, Y') }}</p>
+                <p class="text-xl md:text-2xl mb-4 tracking-widest font-light">{{ Carbon\Carbon::parse($data['religious_wedding_datepicker'])->format('F j, Y') }}</p>
 
                 <!-- Scroll Indicator -->
                 <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2">
@@ -142,11 +186,12 @@
             <div class="max-w-5xl mx-auto">
                 <div class="grid md:grid-cols-2 gap-12 md:gap-20 max-w-4xl mx-auto">
                     <!-- Bride Card -->
+                    @if($data['celebrants_photo_type'] === 'individual_photo')
                     <div class="group relative" data-aos="fade-right">
                         <div class="relative bg-[#f6f1f0] rounded-2xl overflow-hidden hover-lift p-8">
                             <!-- Image Container -->
                             <div class="aspect-square w-48 h-48 mx-auto mb-6 overflow-hidden rounded-full relative">
-                                <img src="{{ asset('storage/' . $brideImage) }}" alt="{{ $brideFirstName }}"
+                                <img src="{{ asset('storage/' . $data['bride_photo']) }}" alt="{{ $data['bride_first_name'] }}"
                                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-[#d6be9e]/20 via-transparent to-transparent"></div>
@@ -155,11 +200,11 @@
                             <!-- Content -->
                             <div class="text-center">
                                 <h3 class="text-2xl font-light text-[#d6be9e]">
-                                    {{ $brideFirstName }}
-                                    <span class="block text-lg opacity-75 mt-1">{{ $brideLastName }}</span>
+                                    {{ $data['bride_first_name'] }}
+                                    <span class="block text-lg opacity-75 mt-1">{{ $data['bride_last_name'] }}</span>
                                 </h3>
                                 <p class="text-gray-600 leading-relaxed mt-4 opacity-90 text-sm">
-                                    {{ $brideDescription }}
+                                    {{ $data['bride_text'] }}
                                 </p>
                             </div>
                         </div>
@@ -176,7 +221,7 @@
                         <div class="relative bg-[#f6f1f0] rounded-2xl overflow-hidden hover-lift p-8">
                             <!-- Image Container -->
                             <div class="aspect-square w-48 h-48 mx-auto mb-6 overflow-hidden rounded-full relative">
-                                <img src="{{ asset('storage/' . $groomImage) }}" alt="{{ $groomFirstName }}"
+                                <img src="{{ asset('storage/' . $data['groom_photo']) }}" alt="{{ $data['groom_first_name'] }}"
                                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-[#d6be9e]/20 via-transparent to-transparent"></div>
@@ -185,11 +230,11 @@
                             <!-- Content -->
                             <div class="text-center">
                                 <h3 class="text-2xl font-light text-[#d6be9e]">
-                                    {{ $groomFirstName }}
-                                    <span class="block text-lg opacity-75 mt-1">{{ $groomLastName }}</span>
+                                    {{ $data['groom_first_name'] }}
+                                    <span class="block text-lg opacity-75 mt-1">{{ $data['groom_last_name'] }}</span>
                                 </h3>
                                 <p class="text-gray-600 leading-relaxed mt-4 opacity-90 text-sm">
-                                    {{ $groomDescription }}
+                                    {{ $data['groom_text'] }}
                                 </p>
                             </div>
                         </div>
@@ -200,6 +245,28 @@
                         <div
                             class="absolute -bottom-4 -right-4 w-24 h-24 border-2 border-[#d6be9e]/20 rounded-full transition-transform duration-500 group-hover:scale-110"></div>
                     </div>
+                    @elseif($data['celebrants_photo_type'] === 'common_photo')
+                    <div class="col-span-2">
+                        <div class="relative bg-[#f6f1f0] rounded-2xl overflow-hidden hover-lift p-8">
+                            <!-- Image Container -->
+                            <div class="aspect-video w-full max-w-2xl mx-auto mb-6 overflow-hidden rounded-lg relative">
+                                <img src="{{ asset('storage/' . $data['couple_photo']) }}" alt="Couple Photo"
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#d6be9e]/20 via-transparent to-transparent"></div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="text-center">
+                                <h3 class="text-2xl font-light text-[#d6be9e]">
+                                    {{ $data['bride_first_name'] }} & {{ $data['groom_first_name'] }}
+                                </h3>
+                                <p class="text-gray-600 leading-relaxed mt-4 opacity-90">
+                                    {{ $data['couple_text'] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </section>
@@ -209,15 +276,15 @@
             <!-- Background Image with Overlay -->
             <div class="absolute inset-0 z-0">
                 <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-                <img src="{{ asset('storage/' . $countdownBackgroundImage) }}" alt="Countdown Background"
+                <img src="{{ asset('storage/' . $data['countdown_image']) }}" alt="Countdown Background"
                      class="w-full h-full object-cover">
             </div>
 
             <div class="max-w-5xl mx-auto relative z-10">
-                <h2 class="text-4xl text-center font-light mb-16 text-white">{{ $countdownTitle }}</h2>
+                <h2 class="text-4xl text-center font-light mb-16 text-white">{{ $data['countdown_text'] }}</h2>
 
                 <div x-data="{
-                    targetDate: new Date('{{ Carbon\Carbon::parse($weddingDate)->format('Y-m-d\TH:i:s') }}').getTime(),
+                    targetDate: new Date('{{ Carbon\Carbon::parse($data['religious_wedding_datepicker'])->format('Y-m-d\TH:i:s') }}').getTime(),
                     days: '00',
                     hours: '00',
                     minutes: '00',
@@ -272,17 +339,17 @@
         <!-- Event Section -->
         <section id="event" class="py-24 px-6 bg-[#f6f1f0]">
             <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl text-center font-light mb-20 text-[#d6be9e]">{{ $eventTitle }}</h2>
+                <h2 class="text-4xl text-center font-light mb-20 text-[#d6be9e]">{{ $data['description_title'] }}</h2>
 
                 <div class="flex flex-col md:flex-row items-center gap-16">
                     <div class="md:w-1/2" data-aos="fade-right">
                         <div class="rounded-2xl overflow-hidden hover-lift">
-                            <img src="{{ asset('storage/' . $coupleImage) }}" alt="Our Love Story"
+                            <img src="{{ asset('storage/' . $data['couple_section_image']) }}" alt="Our Story"
                                  class="w-full h-auto">
                         </div>
                     </div>
                     <div class="md:w-1/2" data-aos="fade-left">
-                        <p class="text-gray-600 leading-relaxed text-lg">{{ $eventDescription }}</p>
+                        <p class="text-gray-600 leading-relaxed text-lg">{{ $data['description_section_text'] }}</p>
                     </div>
                 </div>
             </div>
@@ -291,10 +358,10 @@
         <!-- When & Where Section -->
         <section id="when-where" class="py-24 px-6 bg-white">
             <div class="max-w-6xl mx-auto">
-                <h2 class="text-4xl text-center font-light mb-20 text-[#d6be9e]">{{ $whenWhereTitle }}</h2>
+                <h2 class="text-4xl text-center font-light mb-20 text-[#d6be9e]">{{ $translations['whenWhereTitle'] }}</h2>
 
                 <div class="grid md:grid-cols-3 gap-8">
-                    @foreach($events as $index => $event)
+                    @foreach($events as $event)
                         <div class="bg-[#f6f1f0] rounded-lg overflow-hidden hover-lift" data-aos="fade-up"
                              data-aos-delay="{{ $loop->index * 100 }}">
                             <div class="h-56 overflow-hidden">
@@ -334,15 +401,16 @@
             <!-- Background Image with Overlay -->
             <div class="absolute inset-0 z-0">
                 <div class="absolute inset-0 bg-[#f6f1f0]/70"></div>
-                <img src="{{ asset('storage/' . $rsvpBackgroundImage) }}" alt="RSVP Background"
+                <img src="{{ asset('storage/' . $data['background_photo_first_page']) }}" alt="RSVP Background"
                      class="w-full h-full object-cover">
             </div>
 
             <div class="max-w-3xl mx-auto relative z-10">
                 <div class="bg-white/60 backdrop-blur-md p-12 rounded-2xl hover-lift">
-                    <h2 class="text-3xl text-center font-light mb-4 text-[#d6be9e]">{{ $rsvpTitle }}</h2>
-                    <p class="text-center text-gray-600 mb-12">{{ $rsvpSubtitle }}</p>
+                    <h2 class="text-3xl text-center font-light mb-4 text-[#d6be9e]">{{ $translations['rsvpTitle'] }}</h2>
+                    <p class="text-center text-gray-600 mb-12">{{ $translations['rsvpSubtitle'] }}</p>
 
+                    @if($data['confirmation_possibility'])
                     <form wire:submit.prevent="submitRSVP(true)" class="space-y-8">
                         @if(session()->has('message'))
                             <div class="bg-[#d6be9e]/20 border border-[#d6be9e] text-[#d6be9e] px-6 py-4 rounded-lg">
@@ -357,12 +425,14 @@
                                    class="w-full bg-white/80 border border-[#d6be9e]/20 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#d6be9e]/50">
                         </div>
 
+                        @if($data['additional_question'])
                         <div>
                             <label for="message"
-                                   class="block text-gray-600 mb-2">{{ __('translations.Do you want to tell us something?') }}</label>
+                                   class="block text-gray-600 mb-2">{{ $data['additional_text'] }}</label>
                             <textarea id="message" wire:model="rsvpMessage" rows="3"
                                       class="w-full bg-white/80 border border-[#d6be9e]/20 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#d6be9e]/50"></textarea>
                         </div>
+                        @endif
 
                         <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                             <button type="submit"
@@ -375,6 +445,7 @@
                             </button>
                         </div>
                     </form>
+                    @endif
                 </div>
             </div>
         </section>
@@ -387,12 +458,12 @@
 
                 <!-- Names -->
                 <h2 class="text-4xl font-light text-[#d6be9e] mb-6">
-                    {{ $brideFirstName }} {{ __('translations.and') }} {{ $groomFirstName }}
+                    {{ $data['bride_first_name'] }} {{ __('translations.and') }} {{ $data['groom_first_name'] }}
                 </h2>
 
                 <!-- Date and Location -->
-                <p class="text-xl text-gray-600 mb-2">{{ Carbon\Carbon::parse($weddingDate)->format('F j, Y') }}</p>
-                <p class="text-gray-500">{{ $weddingLocation }}</p>
+                <p class="text-xl text-gray-600 mb-2">{{ Carbon\Carbon::parse($data['religious_wedding_datepicker'])->format('F j, Y') }}</p>
+                <p class="text-gray-500">{{ $data['religious_wedding_address'] }}, {{ $data['religious_wedding_city'] }}</p>
             </div>
         </section>
     </div>

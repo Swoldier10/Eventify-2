@@ -12,6 +12,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Livewire;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -21,6 +22,7 @@ use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 
 class Index extends SimplePage implements HasForms, HasActions
@@ -92,10 +94,34 @@ class Index extends SimplePage implements HasForms, HasActions
         return Action::make('viewTemplate')
             ->label(__('translations.Preview'))
             ->icon('heroicon-m-eye')
-            ->form(function (){
-                return [Livewire::make($this->invitationTemplate->class_name)];
+            ->form(function () {
+                $templateClass = $this->invitationTemplate->class_name ?? \App\Livewire\PeaceInvitation::class;
+                
+                // Determine the correct route based on template class
+                $templateRoute = match($templateClass) {
+                    \App\Livewire\NaturalInvitation::class => 'natural-invitation',
+                    \App\Livewire\PeaceInvitation::class => 'peace-invitation',
+                    default => 'peace-invitation'
+                };
+                
+                $previewUrl = url($templateRoute);
+                
+                return [
+                    Placeholder::make('template_preview')
+                        ->hiddenLabel()
+                        ->content(new HtmlString(
+                            '<iframe src="' . $previewUrl . '" width="100%" height="600px" style="border:none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>'
+                        )),
+                ];
             })
-            ->modalWidth('50%')
+            ->modalWidth(MaxWidth::SevenExtraLarge)
+            ->modalHeading(__('translations.Preview'))
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel(__('translations.Close'))
+            ->extraModalWindowAttributes([
+                'style' => 'margin-top: 2rem; z-index: 9999;',
+                'class' => 'modal-container'
+            ])
             ->action(fn() => null);
     }
 }

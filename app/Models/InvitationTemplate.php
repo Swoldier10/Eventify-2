@@ -12,7 +12,7 @@ class InvitationTemplate extends Model
         'bride_last_name',
         'groom_first_name',
         'groom_last_name',
-        'individual_photo',
+        'celebrants_photo_type',
         'common_photo',
         'no_photo',
         'bride_photo',
@@ -74,5 +74,6 @@ class InvitationTemplate extends Model
         'limit_confirmation_once' => 'boolean',
         'godparents' => 'array',
         'parents' => 'array',
+        'celebrants_photo_type' => 'string',
     ];
-} 
+}

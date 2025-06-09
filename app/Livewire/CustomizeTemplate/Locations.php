@@ -3,6 +3,7 @@
 namespace App\Livewire\CustomizeTemplate;
 
 use App\Filament\Pages\EditTemplate;
+use App\Models\Invitation;
 use Coolsam\Flatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DateTimePicker;
@@ -34,8 +35,8 @@ class Locations extends Component implements HasForms
         $this->form->fill($this->data);
 
         $this->data['civil_wedding_date_time'] = $this->data['civil_wedding_datepicker'] ?? null;
-        $this->data['religious_wedding_date_time'] = $this->data['religious_wedding_datepicker'] ?? null;
-        $this->data['party_date_time'] = $this->data['party_datepicker'] ?? null;
+        $this->data['religious_wedding_datepicker'] = $this->data['religious_wedding_datepicker'] ?? null;
+        $this->data['party_datepicker'] = $this->data['party_datepicker'] ?? null;
 
         $this->data['google_autocomplete_civil_wedding_google_search'] = $this->data['civil_wedding_address'] ? $this->data['civil_wedding_address'] . ', ' . $this->data['civil_wedding_city'] . ', ' . $this->data['civil_wedding_country'] : '';
         $this->data['google_autocomplete_religious_wedding_google_search'] = $this->data['religious_wedding_address'] ? $this->data['religious_wedding_address'] . ', ' . $this->data['religious_wedding_city'] . ', ' . $this->data['religious_wedding_country'] : '';
@@ -116,7 +117,7 @@ class Locations extends Component implements HasForms
                                     ->validationMessages([
                                         'required' => __('translations.This field is required.'),
                                     ]),
-                                Flatpickr::make('civil_wedding_date_time')
+                                Flatpickr::make('civil_wedding_datepicker')
                                     ->label(__('translations.Date & Time'))
                                     ->placeholder(__('translations.Select date'))
                                     ->required()
@@ -177,7 +178,7 @@ class Locations extends Component implements HasForms
                                     ->extraInputAttributes([
                                         'data-google-field' => 'country',
                                     ]),
-                                Flatpickr::make('religious_wedding_date_time')
+                                Flatpickr::make('religious_wedding_datepicker')
                                     ->placeholder(__('translations.Select date'))
                                     ->label(__('translations.Date and time'))
                                     ->required()
@@ -237,7 +238,7 @@ class Locations extends Component implements HasForms
                                     ->extraInputAttributes([
                                         'data-google-field' => 'country',
                                     ]),
-                                Flatpickr::make('party_date_time')
+                                Flatpickr::make('party_datepicker')
                                     ->placeholder(__('translations.Select date'))
                                     ->label(__('translations.Date and time'))
                                     ->required()
@@ -317,7 +318,7 @@ class Locations extends Component implements HasForms
                                     ->extraInputAttributes([
                                         'data-google-field' => 'country',
                                     ]),
-                                DateTimePicker::make('religious_wedding_date_time')
+                                DateTimePicker::make('religious_wedding_datepicker')
                                     ->live(onBlur: true)
                                     ->format('d/m/Y')
                                     ->seconds(false)
@@ -372,7 +373,7 @@ class Locations extends Component implements HasForms
                                     ->extraInputAttributes([
                                         'data-google-field' => 'country',
                                     ]),
-                                DateTimePicker::make('party_date_time')
+                                DateTimePicker::make('party_datepicker')
                                     ->live(onBlur: true)
                                     ->format('d/m/Y')
                                     ->seconds(false)
@@ -395,22 +396,11 @@ class Locations extends Component implements HasForms
         if ($invitation = Filament::getTenant()) {
             $data = $this->form->getState();
 
-            $invitation->update([
-                'civil_wedding_address' => $data['civil_wedding_address'],
-                'civil_wedding_city' => $data['civil_wedding_city'],
-                'civil_wedding_country' => $data['civil_wedding_country'],
-                'civil_wedding_datepicker' => $data['civil_wedding_date_time'],
+            foreach (Invitation::$locationFields as $field) {
+                $invitation->{$field} = $data[$field];
+            }
 
-                'religious_wedding_address' => $data['religious_wedding_address'],
-                'religious_wedding_city' => $data['religious_wedding_city'],
-                'religious_wedding_country' => $data['religious_wedding_country'],
-                'religious_wedding_datepicker' => $data['religious_wedding_date_time'],
-
-                'party_address' => $data['party_address'],
-                'party_city' => $data['party_city'],
-                'party_country' => $data['party_country'],
-                'party_datepicker' => $data['party_date_time'],
-            ]);
+            $invitation->save();
         } else {
             $cachedData = Cache::get('eventify-cached-data');
 

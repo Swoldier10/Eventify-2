@@ -15,8 +15,10 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Livewire;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
@@ -123,9 +125,35 @@ class EditTemplate extends Page implements HasActions
         return Action::make('preview')
             ->label(__('translations.Preview'))
             ->icon('heroicon-m-eye')
-            ->form([
-                TextInput::make('input')
+            ->form(function () {
+                $invitation = static::getCurrentInvitation();
+                $templateClass = $invitation->invitationTemplate->class_name ?? \App\Livewire\PeaceInvitation::class;
+                
+                // Determine the correct route based on template class
+                $templateRoute = match($templateClass) {
+                    \App\Livewire\NaturalInvitation::class => 'natural-invitation',
+                    \App\Livewire\PeaceInvitation::class => 'peace-invitation',
+                    default => 'peace-invitation'
+                };
+                
+                $previewUrl = url($templateRoute);
+                
+                return [
+                    \Filament\Forms\Components\Placeholder::make('template_preview')
+                        ->hiddenLabel()
+                        ->content(new \Illuminate\Support\HtmlString(
+                            '<iframe src="' . $previewUrl . '" width="100%" height="600px" style="border:none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></iframe>'
+                        )),
+                ];
+            })
+            ->modalWidth(MaxWidth::SevenExtraLarge)
+            ->modalHeading(__('translations.Preview'))
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel(__('translations.Close'))
+            ->extraModalWindowAttributes([
+                'style' => 'margin-top: 2rem; z-index: 9999;',
+                'class' => 'modal-container'
             ])
-            ->action(fn() => dd('dadjajdaj'));
+            ->action(fn() => null);
     }
 }

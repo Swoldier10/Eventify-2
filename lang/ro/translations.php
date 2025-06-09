@@ -9,6 +9,7 @@ return [
     'Guest settings' => 'Setǎri invitați',
     'Payment' => 'Platǎ',
     'Preview' => 'Previzualizeazǎ',
+    'Close' => 'Închide',
     'Open sidebar' => 'Deschide meniu',
     'The first step is to establish a few essential details about your invitation' => 'Primul pas este să stabilim câteva detalii esențiale despre invitația ta',
     'The title of the invitation' => 'Titlul invitației',

@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\PeaceInvitation;
+use App\Livewire\NaturalInvitation;
 use App\Livewire\SuccessfullyRegistered;
 use App\Mail\RegistrationMail;
 use Illuminate\Support\Facades\Mail;
@@ -23,3 +24,6 @@ Route::get('/successfully-registered', SuccessfullyRegistered::class)
 
 Route::get('/peace-invitation', PeaceInvitation::class)
     ->name('peace-invitation');
+
+Route::get('/natural-invitation', NaturalInvitation::class)
+    ->name('natural-invitation');
