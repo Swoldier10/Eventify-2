@@ -282,7 +282,7 @@ class SeatsLayout extends Page
                             foreach ($livewire->data['tables'][$index]['guests'] ?? [] as $guest) {
                                 $guestCount += $guest['nr_of_people'] + $guest['nr_of_kids'];
                             }
-                            return new HtmlString('<div class="flex justify-between">' . $guestCount . ' / ' . $this->data['max_seats_per_table'] . '</div>');
+                            return new HtmlString('<div class="flex justify-between">' . $guestCount . ' / ' . $this->data['max_seats_per_table'] .  ' ' . __('translations.Guests') .'</div>');
                         })
                 ]);
         }

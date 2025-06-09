@@ -1,5 +1,5 @@
 <div class="mt-6">
-    <div class="flex justify-end">
+    <div class="flex justify-center md:justify-end">
         {{ $this->previewAction }}
     </div>
     <x-filament-actions::modals/>

@@ -181,7 +181,7 @@ return [
     'Confirmed guests' => 'Persoane confirmate',
     'Not attending' => 'Nu vor ajunge',
     'Number of families with children' => 'Familii cu copii',
-    'This is the total number of people who have confirmed so far' => 'Acesta este numărul total de persoane care au confirmat până în acest moment',
+    'This is the total number of people who have confirmed so far, WITHOUT kids' => 'Acesta este numărul total de persoane care au confirmat până în acest moment, FǍRǍ copii',
     'This is the total number of families who will be attending with at least one child' => 'Acesta este numărul total de familii care vor veni însoțite de cel puțin un copil',
     'This is the total number of people who have confirmed that they will NOT attend so far' => 'Acesta este numărul total de persoane care au confirmat că NU vor ajunge până în acest moment',
     'Unconfirmed guests' => 'Persoane neconfirmate',
@@ -226,6 +226,9 @@ return [
     'Your account has been successfully registered.' => 'Contul tău a fost înregistrat cu succes.',
     'If you have any questions or need assistance, feel free to reach out. We\'re happy to help!' => 'Pentru întrebări sau informații suplimentare, nu ezita să ne contactezi. Suntem bucuroși să te ajutăm!',
     'All rights reserved.' => 'Toate drepturile rezervate.',
+    'Create your first invitation' => 'Creează prima ta invitație',
+    'Total number of children' => 'Numǎrul total de copii',
+    'This is the total number of children who will be attending so far' => 'Acesta este numărul total de copii care vor participa până în acest moment',
     'Create your first invitation' => 'Creează prima ta invitație',
     // New translations used in the wedding invitation template
     'Menu' => 'Meniu',

@@ -35,7 +35,9 @@ class DetailsOfCelebrants extends Page implements HasActions
         return $form
             ->schema([
                 Livewire::make(\App\Livewire\CustomizeTemplate\DetailsOfCelebrants::class),
-                Grid::make(2)
+                Grid::make([
+                    'default' => 2
+                ])
                     ->schema([
                         Action::make('prev_step')
                             ->label(__('translations.Back'))
